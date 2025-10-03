@@ -108,5 +108,3 @@ inputValue.addEventListener('keydown', (event: KeyboardEvent) => {
 })
 
 window.addEventListener('DOMContentLoaded', loadTasks)
-
-
