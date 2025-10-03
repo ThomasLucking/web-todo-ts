@@ -12,7 +12,9 @@ ul {
   display: inline-block;
   text-align: left;
 }
-
+:root {
+  --color-error: red;
+}
 .container {
   display: flex;
   align-items: center;
@@ -21,9 +23,10 @@ ul {
   gap: 20px;
 }
 #add-todo-button {
-  padding: 10px 120px 10px 10px;
+  padding: 10px;
+  width: 175px;
   text-align: center;
 }
-#error-message{
-  color: red;
+#error-message {
+  color: var(--color-error, red);
 }

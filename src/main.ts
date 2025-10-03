@@ -9,29 +9,30 @@ const errorMessage = document.querySelector<HTMLDivElement>('#error-message')
 
 if (!addTaskButton || !inputValue || !taskCreatedSection || !errorMessage) {
   console.error('Missing a Dom element')
-} else {
-  const createTask = () => {
-    const value = inputValue.value.trim()
+  throw new Error('Missing a DOM element. Aborting script.')
+}
 
-    if (!value) {
-      errorMessage.textContent = 'Please enter a task'
-      return
-    }
+const createTask = () => {
+  const value = inputValue.value.trim()
 
-    errorMessage.textContent = ''
-    const task = document.createElement('li')
-    task.classList.add('todo-item')
-    task.textContent = value
-
-    taskCreatedSection.append(task)
-    inputValue.value = ''
+  if (!value) {
+    errorMessage.textContent = 'Please enter a task'
+    return
   }
 
-  addTaskButton.addEventListener('click', createTask)
+  errorMessage.textContent = ''
+  const task = document.createElement('li')
+  task.classList.add('todo-item')
+  task.textContent = value
 
-  inputValue.addEventListener('keydown', (event: KeyboardEvent) => {
-    if (event.key === 'Enter') {
-      createTask()
-    }
-  })
+  taskCreatedSection.append(task)
+  inputValue.value = ''
 }
+
+addTaskButton.addEventListener('click', createTask)
+
+inputValue.addEventListener('keydown', (event: KeyboardEvent) => {
+  if (event.key === 'Enter') {
+    createTask()
+  }
+})
