@@ -7,3 +7,26 @@ body {
 * {
   font-family: Helvetica, Arial, sans-serif;
 }
+ul {
+  list-style-type: none;
+  display: inline-block;
+  text-align: left;
+}
+:root {
+  --color-error: red;
+}
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+}
+#add-todo-button {
+  padding: 10px;
+  width: 175px;
+  text-align: center;
+}
+#error-message {
+  color: var(--color-error, red);
+}
