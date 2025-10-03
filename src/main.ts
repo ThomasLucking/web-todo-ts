@@ -9,13 +9,19 @@ const errorMessage = document.querySelector<HTMLDivElement>('#error-message')
 
 const STORAGE_KEY = 'tasks' as const
 const TODO_ITEM_CLASS = 'todo-item' as const
+const CHECKBOX_ITEM_CLASS = 'todo-checkbox' as const
+const SPAN_TEXT_CLASS = 'todo-span' as const
+interface Tasks {
+  text: string
+  completed: boolean
+}
 
 if (!addTaskButton || !inputValue || !taskCreatedSection || !errorMessage) {
   console.error('Missing a Dom element')
   throw new Error('Missing a DOM element. Aborting script.')
 }
 // this function gets the tasks and uses try and catch if it fails to parse or gets the task.
-const getTasks = (): string[] => {
+const getTasks = (): Tasks[] => {
   try {
     return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]')
   } catch (_error) {
@@ -24,21 +30,43 @@ const getTasks = (): string[] => {
   }
 }
 // this function saves the task as STORAGE_KEY and catches errors if it fails to save the task
-const saveTasks = (tasks: string[]): void => {
+const saveTasks = (tasks: Tasks[]): void => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks))
-    console.log('tasks saved')
   } catch (_error) {
     console.error('Failed to save tasks.', _error)
   }
 }
 // this renders the tasks UI and value
-const renderTask = (taskText: string): void => {
-  const task = document.createElement('li')
-  task.classList.add(TODO_ITEM_CLASS)
-  task.textContent = taskText
-  taskCreatedSection.append(task)
+const renderTask = (task: Tasks): void => {
+  const taskItem = document.createElement('li')
+  taskItem.classList.add(TODO_ITEM_CLASS)
+
+  const checkbox = document.createElement('input')
+  checkbox.type = 'checkbox'
+  checkbox.checked = task.completed
+  checkbox.classList.add(CHECKBOX_ITEM_CLASS)
+
+  const textSpan = document.createElement('span')
+  textSpan.textContent = task.text
+  textSpan.classList.add(SPAN_TEXT_CLASS)
+
+  taskItem.append(checkbox, textSpan)
+  taskCreatedSection.append(taskItem)
+
+  checkbox.addEventListener('change', () => {
+    task.completed = checkbox.checked
+    const tasks = getTasks()
+    const taskToUpdate = tasks.find((t) => t.text === task.text)
+
+    if (taskToUpdate) {
+      taskToUpdate.completed = task.completed
+    }
+
+    saveTasks(tasks)
+  })
 }
+
 // error handling
 const showError = (message: string): void => {
   errorMessage.textContent = message
@@ -57,15 +85,17 @@ const createTask = (): void => {
   }
 
   clearError()
-  renderTask(value)
+  const newTask: Tasks = { text: value, completed: false }
+  renderTask(newTask)
   inputValue.value = ''
   const tasks = getTasks()
-  tasks.push(value)
+  tasks.push(newTask)
   saveTasks(tasks)
 }
 
 const loadTasks = (): void => {
   const tasks = getTasks()
+  console.log(tasks)
   tasks.forEach(renderTask)
 }
 
@@ -78,3 +108,5 @@ inputValue.addEventListener('keydown', (event: KeyboardEvent) => {
 })
 
 window.addEventListener('DOMContentLoaded', loadTasks)
+
+
