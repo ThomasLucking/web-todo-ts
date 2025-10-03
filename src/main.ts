@@ -29,7 +29,7 @@ const saveTasks = (tasks: string[]): void => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks))
     console.log('tasks saved')
   } catch (_error) {
-    console.log('Failed to save tasks.')
+    console.error('Failed to save tasks.', _error)
   }
 }
 // this renders the tasks UI and value
@@ -47,7 +47,7 @@ const showError = (message: string): void => {
 const clearError = (): void => {
   errorMessage.textContent = ''
 }
-// this creates the tasks using the functions above.
+
 const createTask = (): void => {
   const value = inputValue.value.trim()
 
@@ -64,7 +64,7 @@ const createTask = (): void => {
   saveTasks(tasks)
 }
 
-const loadTasks = () => {
+const loadTasks = (): void => {
   const tasks = getTasks()
   tasks.forEach(renderTask)
 }
@@ -77,5 +77,4 @@ inputValue.addEventListener('keydown', (event: KeyboardEvent) => {
   }
 })
 
-// transforms the json into text then takes it from localstorage
 window.addEventListener('DOMContentLoaded', loadTasks)
