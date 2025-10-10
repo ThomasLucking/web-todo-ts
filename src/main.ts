@@ -7,6 +7,9 @@ const taskCreatedSection =
   document.querySelector<HTMLUListElement>('#todo-elements')
 const errorMessage = document.querySelector<HTMLDivElement>('#error-message')
 
+const deleteAllbutton =
+  document.querySelector<HTMLButtonElement>('#remove-all-button')
+
 const STORAGE_KEY = 'tasks' as const
 const TODO_ITEM_CLASS = 'todo-item' as const
 const CHECKBOX_ITEM_CLASS = 'todo-checkbox' as const
@@ -19,7 +22,13 @@ interface Tasks {
   completed: boolean
 }
 
-if (!addTaskButton || !inputValue || !taskCreatedSection || !errorMessage) {
+if (
+  !addTaskButton ||
+  !inputValue ||
+  !taskCreatedSection ||
+  !errorMessage ||
+  !deleteAllbutton
+) {
   console.error('Missing a Dom element')
   throw new Error('Missing a DOM element. Aborting script.')
 }
@@ -46,6 +55,15 @@ const deleteTasks = (taskId: string): void => {
     const tasks = getTasks() // gets all the tasks
     const updatedTasks = tasks.filter((task: Tasks) => task.id !== taskId) // filters the tasks to correspond to the specific ID.
     saveTasks(updatedTasks)
+  } catch (_error) {
+    console.error('Failed to delete tasks.', _error)
+  }
+}
+
+const deleteAllTasks = (): void => {
+  try {
+    localStorage.clear()
+    taskCreatedSection.innerHTML = ''
   } catch (_error) {
     console.error('Failed to delete tasks.', _error)
   }
@@ -137,7 +155,7 @@ const loadTasks = (): void => {
 }
 
 addTaskButton.addEventListener('click', createTask)
-
+deleteAllbutton.addEventListener('click', deleteAllTasks)
 inputValue.addEventListener('keydown', (event: KeyboardEvent) => {
   if (event.key === 'Enter') {
     createTask()
