@@ -73,6 +73,21 @@ const deleteAllTasks = (): void => {
   }
 }
 
+const dayNumber = (date: Date) =>
+  Math.floor(date.getTime() / (1000 * 60 * 60 * 24)) // calculates the day number by multiplying from seconds to minutes to hours to 24 hours.
+
+const dateRange = (
+  dateStr: string,
+  daysMin: number,
+  daysMax: number,
+): boolean => {
+  const targetDay = dayNumber(new Date(dateStr)) // target day
+  const today = dayNumber(new Date()) // current day
+
+  const diffInDays = targetDay - today // calculate the difference between target day and today
+  return diffInDays >= daysMin && diffInDays <= daysMax
+}
+
 const createConfigTimeDate = (task: Tasks): HTMLParagraphElement | null => {
   const dueDate = document.createElement('p')
   dueDate.classList.add(TODO_DATE)
@@ -83,14 +98,21 @@ const createConfigTimeDate = (task: Tasks): HTMLParagraphElement | null => {
   if (task.dueDate) {
     const dueDateObj = new Date(task.dueDate)
 
-    if (Number.isNaN(dueDateObj.getTime())) {
-      showError('Please enter a valid date')
-      return null
-    }
-
     if (dueDateObj < datenow) {
-      showError('Please enter a valid date')
-      return null
+      time.style.backgroundColor = 'red'
+      time.style.color = 'black'
+    }
+    if (dueDateObj === datenow) {
+      time.style.backgroundColor = 'orange'
+      time.style.color = 'black'
+    }
+    if (dateRange(task.dueDate, 2, 4)) {
+      time.style.backgroundColor = 'yellow'
+      time.style.color = 'black'
+    }
+    if (dateRange(task.dueDate, 4, 9999)) {
+      time.style.backgroundColor = 'green'
+      time.style.color = 'black'
     }
 
     time.setAttribute('datetime', task.dueDate)
