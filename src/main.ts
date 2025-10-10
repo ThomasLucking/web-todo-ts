@@ -46,7 +46,7 @@ const renderTask = (task: Tasks): void => {
   if (task.completed) {
     taskItem.classList.add('completed');
   }
-  
+
 
   const checkbox = document.createElement('input')
   checkbox.type = 'checkbox'
@@ -87,9 +87,10 @@ const clearError = (): void => {
   errorMessage.textContent = ''
 }
 
-const randomId = function(length = 6) {
+const randomId = (length = 6) =>{
   return Math.random().toString(36).substring(2, length+2);
-};
+}
+
 
 
 const createTask = (): void => {
