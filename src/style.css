@@ -70,6 +70,10 @@ ul {
   border-color: #667eea;
   box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
 }
+.todo-delete {
+  color: var(--color-error);
+  margin-left: 2rem;
+}
 
 .tasks-interactivity {
   display: flex;
@@ -108,9 +112,14 @@ ul li:hover {
   background: #f9f9f9;
 }
 
-ul li.completed {
+li.completed .todo-span {
   text-decoration: line-through;
   opacity: 0.6;
+}
+
+li.completed button {
+  opacity: 1;
+  /* optional, in case you set overall opacity elsewhere */
 }
 
 ul li span {
