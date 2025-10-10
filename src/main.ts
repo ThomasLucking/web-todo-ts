@@ -7,19 +7,22 @@ const taskCreatedSection =
   document.querySelector<HTMLUListElement>('#todo-elements')
 const errorMessage = document.querySelector<HTMLDivElement>('#error-message')
 
-const deleteAllbutton =
-  document.querySelector<HTMLButtonElement>('#remove-all-button')
+const deleteAllbutton = document.querySelector<HTMLButtonElement>('#delete-all')
+
+const todoDates = document.querySelector<HTMLInputElement>('#todo-date-input')
 
 const STORAGE_KEY = 'tasks' as const
 const TODO_ITEM_CLASS = 'todo-item' as const
 const CHECKBOX_ITEM_CLASS = 'todo-checkbox' as const
 const SPAN_TEXT_CLASS = 'todo-span' as const
 const DELETE_TASK_CLASS = 'todo-delete' as const
+const TODO_DATE = 'todo-date' as const
 
 interface Tasks {
   id: string
   text: string
   completed: boolean
+  dueDate: string
 }
 
 if (
@@ -27,7 +30,8 @@ if (
   !inputValue ||
   !taskCreatedSection ||
   !errorMessage ||
-  !deleteAllbutton
+  !deleteAllbutton ||
+  !todoDates
 ) {
   console.error('Missing a Dom element')
   throw new Error('Missing a DOM element. Aborting script.')
@@ -69,6 +73,35 @@ const deleteAllTasks = (): void => {
   }
 }
 
+const createConfigTimeDate = (task: Tasks): HTMLParagraphElement | null => {
+  const dueDate = document.createElement('p')
+  dueDate.classList.add(TODO_DATE)
+
+  const time = document.createElement('time')
+  const datenow = new Date()
+
+  if (task.dueDate) {
+    const dueDateObj = new Date(task.dueDate)
+
+    if (Number.isNaN(dueDateObj.getTime())) {
+      showError('Please enter a valid date')
+      return null
+    }
+
+    if (dueDateObj < datenow) {
+      showError('Please enter a valid date')
+      return null
+    }
+
+    time.setAttribute('datetime', task.dueDate)
+    time.textContent = dueDateObj.toLocaleDateString('de-CH')
+  } else {
+    time.textContent = 'no due date'
+  }
+
+  dueDate.appendChild(time)
+  return dueDate
+}
 // this renders the tasks UI and value
 const renderTask = (task: Tasks): void => {
   const taskItem = document.createElement('li')
@@ -90,7 +123,10 @@ const renderTask = (task: Tasks): void => {
   deleteElement.textContent = 'Remove'
   deleteElement.classList.add(DELETE_TASK_CLASS)
 
-  taskItem.append(checkbox, textSpan, deleteElement)
+  const dueDateElement = createConfigTimeDate(task)
+  if (!dueDateElement) return
+
+  taskItem.append(checkbox, textSpan, deleteElement, dueDateElement)
   taskCreatedSection.append(taskItem)
 
   checkbox.addEventListener('change', () => {
@@ -140,7 +176,12 @@ const createTask = (): void => {
   }
 
   clearError()
-  const newTask: Tasks = { text: value, completed: false, id: randomId(10) }
+  const newTask: Tasks = {
+    text: value,
+    completed: false,
+    id: randomId(10),
+    dueDate: todoDates.value,
+  }
   renderTask(newTask)
   inputValue.value = ''
   const tasks = getTasks()
