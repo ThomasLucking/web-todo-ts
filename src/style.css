@@ -70,11 +70,10 @@ ul {
   border-color: #667eea;
   box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
 }
-.todo-delete{
+.todo-delete {
   color: #ff4c4c;
   margin-left: 2rem;
 }
-
 
 .tasks-interactivity {
   display: flex;

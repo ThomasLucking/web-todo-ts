@@ -41,17 +41,15 @@ const saveTasks = (tasks: Tasks[]): void => {
   }
 }
 
-
 const deleteTasks = (taskId: string): void => {
   try {
-    const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); // gets al the tasks
-    const updatedTasks = tasks.filter((task: Tasks) => task.id !== taskId); // filters the tasks to correspond to the specific ID.
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedTasks));
+    const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]') // gets al the tasks
+    const updatedTasks = tasks.filter((task: Tasks) => task.id !== taskId) // filters the tasks to correspond to the specific ID.
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedTasks))
   } catch (_error) {
     console.error('Failed to delete tasks.', _error)
   }
 }
-
 
 // this renders the tasks UI and value
 const renderTask = (task: Tasks): void => {
@@ -94,11 +92,10 @@ const renderTask = (task: Tasks): void => {
     saveTasks(tasks)
   })
 
-  deleteElement.addEventListener('click', () =>{
+  deleteElement.addEventListener('click', () => {
     taskItem.remove()
     deleteTasks(task.id)
   })
-
 }
 
 // error handling
@@ -140,8 +137,6 @@ const loadTasks = (): void => {
 }
 
 addTaskButton.addEventListener('click', createTask)
-
-
 
 inputValue.addEventListener('keydown', (event: KeyboardEvent) => {
   if (event.key === 'Enter') {
