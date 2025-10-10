@@ -101,18 +101,22 @@ const createConfigTimeDate = (task: Tasks): HTMLParagraphElement | null => {
     if (dueDateObj < datenow) {
       time.style.backgroundColor = 'red'
       time.style.color = 'black'
+      
     }
     if (dueDateObj === datenow) {
       time.style.backgroundColor = 'orange'
       time.style.color = 'black'
+
     }
     if (dateRange(task.dueDate, 2, 4)) {
       time.style.backgroundColor = 'yellow'
       time.style.color = 'black'
+
     }
     if (dateRange(task.dueDate, 4, 9999)) {
       time.style.backgroundColor = 'green'
       time.style.color = 'black'
+
     }
 
     time.setAttribute('datetime', task.dueDate)
