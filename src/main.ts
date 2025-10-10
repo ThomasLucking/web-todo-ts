@@ -1,4 +1,4 @@
-import './style.css'
+import './assets/style.css'
 import type { Tasks } from './types'
 import { getTasks, saveTasks, deleteAllTasks } from './utils/storage'
 import { randomId } from './utils/IdGeneration'
