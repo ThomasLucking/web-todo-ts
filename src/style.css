@@ -71,7 +71,7 @@ ul {
   box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
 }
 .todo-delete {
-  color: #ff4c4c;
+  color: var(--color-error);
   margin-left: 2rem;
 }
 

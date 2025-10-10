@@ -43,9 +43,9 @@ const saveTasks = (tasks: Tasks[]): void => {
 
 const deleteTasks = (taskId: string): void => {
   try {
-    const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]') // gets al the tasks
+    const tasks = getTasks() // gets all the tasks
     const updatedTasks = tasks.filter((task: Tasks) => task.id !== taskId) // filters the tasks to correspond to the specific ID.
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedTasks))
+    saveTasks(updatedTasks)
   } catch (_error) {
     console.error('Failed to delete tasks.', _error)
   }
