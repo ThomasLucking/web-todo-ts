@@ -2,31 +2,119 @@ html,
 body {
   padding: 0;
   margin: 0;
+  background: #f4f6f8;
 }
 
 * {
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 16px;
 }
+
+h1 {
+  font-size: 2rem;
+  color: #333;
+}
+
 ul {
   list-style-type: none;
   display: inline-block;
   text-align: left;
+  padding: 0;
+  width: 100%;
 }
+
 :root {
-  --color-error: red;
+  --color-error: #ff4c4c;
 }
+
 .container {
   display: flex;
   align-items: center;
-  justify-content: center;
   flex-direction: column;
   gap: 20px;
+  padding: 40px;
 }
+
 #add-todo-button {
   padding: 10px;
-  width: 175px;
+  width: 180px;
   text-align: center;
+  border-radius: 0.5rem;
+  background: purple;
+  border: none;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
 }
+
+#add-todo-button:hover {
+  background: linear-gradient(135deg, #5a6cd4, #673fae);
+  transform: translateY(-2px);
+}
+
 #error-message {
-  color: var(--color-error, red);
+  color: var(--color-error);
+  font-size: 0.9rem;
+}
+
+#todo-input {
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  width: 20rem;
+  padding: 10px;
+}
+
+#todo-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+}
+
+.tasks-interactivity {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  align-items: center;
+}
+
+.list_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+}
+
+ul li {
+  background: white;
+  margin-bottom: 12px;
+  padding: 15px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.3s ease;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+ul li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+  background: #f9f9f9;
+}
+
+ul li.completed {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+ul li span {
+  flex: 1;
+  word-wrap: break-word;
+  word-break: break-word;
 }
