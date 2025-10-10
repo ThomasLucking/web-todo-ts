@@ -1,4 +1,4 @@
-import { DATE_RANGES } from '../types/index'
+import { DATE_RANGES, OVERDUE_MESSAGE } from '../types/index'
 
 export const dayNumber = (date: Date) =>
   Math.floor(date.getTime() / (1000 * 60 * 60 * 24)) // calculates the day number by multiplying from seconds to minutes to hours to 24 hours.
@@ -28,4 +28,18 @@ export const getColorScheme = (dueDate: string, datenow: Date) => {
     return DATE_RANGES.SOON
   }
   return DATE_RANGES.FUTURE
+}
+
+export const checkOverdueTasks = (
+  dueDate: string,
+  datenow: Date,
+) => {
+  const dueDateObj = new Date(dueDate)
+  if (dueDateObj < datenow) {
+    const overdueMessage = document.createElement('p')
+    overdueMessage.textContent = 'test'
+    overdueMessage.classList.add(OVERDUE_MESSAGE)
+
+
+  }
 }

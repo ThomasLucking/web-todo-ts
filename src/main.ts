@@ -1,9 +1,12 @@
 import './assets/style.css'
+import { clearError, showError } from './components/errorHandler'
+import {
+  attachTaskEventListeners,
+  createTaskElement,
+} from './components/taskElement'
 import type { Tasks } from './types'
-import { getTasks, saveTasks, deleteAllTasks } from './utils/storage'
 import { randomId } from './utils/IdGeneration'
-import { createTaskElement, attachTaskEventListeners } from './components/taskElement'
-import { showError, clearError } from './components/errorHandler'
+import { deleteAllTasks, getTasks, saveTasks } from './utils/storage'
 
 const addTaskButton =
   document.querySelector<HTMLButtonElement>('#add-todo-button')
