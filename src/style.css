@@ -45,7 +45,6 @@ ul {
   font-weight: 600;
   color: white;
   cursor: pointer;
-  
 }
 
 #add-todo-button:hover {
@@ -79,12 +78,10 @@ ul {
   align-items: center;
 }
 
-.list_container{
+.list_container {
   display: flex;
   flex-direction: column;
   justify-content: end;
-
-
 }
 
 ul li {
@@ -121,6 +118,3 @@ ul li span {
   word-wrap: break-word;
   word-break: break-word;
 }
-
-
-

@@ -44,9 +44,8 @@ const renderTask = (task: Tasks): void => {
   const taskItem = document.createElement('li')
   taskItem.classList.add(TODO_ITEM_CLASS)
   if (task.completed) {
-    taskItem.classList.add('completed');
+    taskItem.classList.add('completed')
   }
-
 
   const checkbox = document.createElement('input')
   checkbox.type = 'checkbox'
@@ -62,9 +61,9 @@ const renderTask = (task: Tasks): void => {
 
   checkbox.addEventListener('change', () => {
     task.completed = checkbox.checked
-    if(task.completed) {
+    if (task.completed) {
       taskItem.classList.add('completed')
-    }else{
+    } else {
       taskItem.classList.remove('completed')
     }
     const tasks = getTasks()
@@ -87,11 +86,11 @@ const clearError = (): void => {
   errorMessage.textContent = ''
 }
 
-const randomId = (length = 6) =>{
-  return Math.random().toString(36).substring(2, length+2);
+const randomId = (length = 6) => {
+  return Math.random()
+    .toString(36)
+    .substring(2, length + 2)
 }
-
-
 
 const createTask = (): void => {
   const value = inputValue.value.trim()
@@ -100,7 +99,6 @@ const createTask = (): void => {
     showError('Please enter a task')
     return
   }
-
 
   clearError()
   const newTask: Tasks = { text: value, completed: false, id: randomId(10) }
