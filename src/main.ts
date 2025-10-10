@@ -11,7 +11,9 @@ const STORAGE_KEY = 'tasks' as const
 const TODO_ITEM_CLASS = 'todo-item' as const
 const CHECKBOX_ITEM_CLASS = 'todo-checkbox' as const
 const SPAN_TEXT_CLASS = 'todo-span' as const
+
 interface Tasks {
+  id: string
   text: string
   completed: boolean
 }
@@ -41,6 +43,10 @@ const saveTasks = (tasks: Tasks[]): void => {
 const renderTask = (task: Tasks): void => {
   const taskItem = document.createElement('li')
   taskItem.classList.add(TODO_ITEM_CLASS)
+  if (task.completed) {
+    taskItem.classList.add('completed');
+  }
+  
 
   const checkbox = document.createElement('input')
   checkbox.type = 'checkbox'
@@ -56,8 +62,13 @@ const renderTask = (task: Tasks): void => {
 
   checkbox.addEventListener('change', () => {
     task.completed = checkbox.checked
+    if(task.completed) {
+      taskItem.classList.add('completed')
+    }else{
+      taskItem.classList.remove('completed')
+    }
     const tasks = getTasks()
-    const taskToUpdate = tasks.find((t) => t.text === task.text)
+    const taskToUpdate = tasks.find((t) => t.id === task.id)
 
     if (taskToUpdate) {
       taskToUpdate.completed = task.completed
@@ -76,6 +87,11 @@ const clearError = (): void => {
   errorMessage.textContent = ''
 }
 
+const randomId = function(length = 6) {
+  return Math.random().toString(36).substring(2, length+2);
+};
+
+
 const createTask = (): void => {
   const value = inputValue.value.trim()
 
@@ -84,8 +100,9 @@ const createTask = (): void => {
     return
   }
 
+
   clearError()
-  const newTask: Tasks = { text: value, completed: false }
+  const newTask: Tasks = { text: value, completed: false, id: randomId(10) }
   renderTask(newTask)
   inputValue.value = ''
   const tasks = getTasks()
