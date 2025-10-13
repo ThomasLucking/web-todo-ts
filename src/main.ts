@@ -1,11 +1,11 @@
 import './assets/style.css'
-import { randomId } from '../src/utils/IdGeneration'
 import { clearError, showError } from './components/errorHandler'
 import {
   attachTaskEventListeners,
   createTaskElement,
 } from './components/taskElement'
 import type { Tasks } from './types'
+import { randomId } from './utils/IdGeneration'
 import { deleteAllTasks, getTasks, saveTasks } from './utils/storage'
 
 const addTaskButton =
@@ -71,7 +71,10 @@ const handleDeleteAll = (): void => {
   taskCreatedSection.innerHTML = ''
 }
 
-addTaskButton.addEventListener('click', createTask)
+addTaskButton.addEventListener('click', () => {
+  createTask()
+})
+
 deleteAllbutton.addEventListener('click', handleDeleteAll)
 inputValue.addEventListener('keydown', (event: KeyboardEvent) => {
   if (event.key === 'Enter') {

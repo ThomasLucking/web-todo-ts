@@ -12,9 +12,11 @@
 <body>
   <script type="module" src="/src/main.ts"></script>
   <div class="container">
+    <div class="overdue-Message"></div>
     <h1>My Tasks</h1>
     <label for="todo-input">Add Tasks</label>
-    <div id="error-message"></div>
+    <div id="error-message">
+    </div>
     <div class="tasks-interactivity">
       <input type="text" id="todo-input" placeholder="Add a new Task">
       <input type="date" id="todo-date-input" pattern="\d{4}-\d{2}-\d{2}">

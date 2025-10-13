@@ -6,7 +6,7 @@ import {
   TODO_DATE,
   TODO_ITEM_CLASS,
 } from '../types'
-import { getColorScheme } from '../utils/date'
+import { checkOverdueTasks, getColorScheme } from '../utils/date'
 import { deleteTasks, getTasks, saveTasks } from '../utils/storage'
 
 const createConfigTimeDate = (task: Tasks): HTMLParagraphElement => {
@@ -67,7 +67,7 @@ export const createTaskElement = (
   return { taskItem, checkbox, textSpan, deleteButton }
 }
 
-const updateTaskState = (task: Tasks, completed: boolean): void => {
+export const updateTaskState = (task: Tasks, completed: boolean): void => {
   task.completed = completed
 
   const tasks = getTasks()
@@ -80,6 +80,11 @@ const updateTaskState = (task: Tasks, completed: boolean): void => {
   saveTasks(tasks)
 }
 
+const removeOverdueMessage = (taskId: string) => {
+  const container = document.querySelector(`[data-taskid="${taskId}"]`)
+  container?.remove()
+}
+
 export const attachTaskEventListeners = (
   elements: {
     taskItem: HTMLLIElement
@@ -89,12 +94,13 @@ export const attachTaskEventListeners = (
   task: Tasks,
 ): void => {
   const { taskItem, checkbox, deleteButton } = elements
-
+  checkOverdueTasks(task.dueDate, new Date(), task.id)
   checkbox.addEventListener('change', () => {
     const isCompleted = checkbox.checked
 
     if (isCompleted) {
       taskItem.classList.add('completed')
+      removeOverdueMessage(task.id)
     } else {
       taskItem.classList.remove('completed')
     }
@@ -105,5 +111,6 @@ export const attachTaskEventListeners = (
   deleteButton.addEventListener('click', () => {
     taskItem.remove()
     deleteTasks(task.id)
+    removeOverdueMessage(task.id)
   })
 }
