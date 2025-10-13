@@ -1,3 +1,4 @@
+
 import './assets/style.css'
 import CategoryManager from './CategoriesHooks/CategoriesManager'
 import { CategoryAPI } from './CategoryApiHandling/CategoryAPI'
