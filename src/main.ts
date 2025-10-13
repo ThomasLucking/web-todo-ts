@@ -1,3 +1,4 @@
+
 import './assets/style.css'
 import { clearError, showError } from './components/errorHandler'
 import {
@@ -7,6 +8,8 @@ import {
 import type { Tasks } from './types'
 import { randomId } from './utils/IdGeneration'
 import { deleteAllTasks, getTasks, saveTasks } from './utils/storage'
+
+
 
 const addTaskButton =
   document.querySelector<HTMLButtonElement>('#add-todo-button')
