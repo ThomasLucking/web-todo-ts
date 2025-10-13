@@ -1,7 +1,7 @@
 import { DATE_RANGES, OVERDUE_MESSAGE } from '../types/index'
 
 const overdueMessageContainer =
-  document.querySelector<HTMLDivElement>('.overdueMessage')
+  document.querySelector<HTMLDivElement>('.overdue-Message')
 
 if (!overdueMessageContainer) {
   console.error('Missing a Dom element')
@@ -41,15 +41,15 @@ export const checkOverdueTasks = (
   dueDate: string,
   datenow: Date,
   taskid: string,
-) => {
+): void => {
   const dueDateObj = new Date(dueDate)
   const oldmessage = document.querySelector(`[data-taskid="${taskid}"]`) //assign the data attribute to the message.
   if (!oldmessage) {
-    if (dueDateObj < datenow) {
+    if (dayNumber(dueDateObj) < dayNumber(datenow)) {
       const overdueMessage = document.createElement('p')
       overdueMessage.dataset.taskid = taskid
       overdueMessage.classList.add(OVERDUE_MESSAGE)
-      overdueMessage.textContent = 'TASK IS OVERDUE!'
+      overdueMessage.textContent = 'Task is overdue'
       overdueMessageContainer.append(overdueMessage)
     }
   }

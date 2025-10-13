@@ -80,6 +80,11 @@ export const updateTaskState = (task: Tasks, completed: boolean): void => {
   saveTasks(tasks)
 }
 
+const removeOverdueMessage = (taskId: string) => {
+  const container = document.querySelector(`[data-taskid="${taskId}"]`)
+  container?.remove()
+}
+
 export const attachTaskEventListeners = (
   elements: {
     taskItem: HTMLLIElement
@@ -95,8 +100,7 @@ export const attachTaskEventListeners = (
 
     if (isCompleted) {
       taskItem.classList.add('completed')
-      const container = document.querySelector(`[data-taskid="${task.id}"]`)
-      container?.remove()
+      removeOverdueMessage(task.id)
     } else {
       taskItem.classList.remove('completed')
     }
@@ -107,7 +111,6 @@ export const attachTaskEventListeners = (
   deleteButton.addEventListener('click', () => {
     taskItem.remove()
     deleteTasks(task.id)
-    const container = document.querySelector(`[data-taskid="${task.id}"]`)
-    container?.remove()
+    removeOverdueMessage(task.id)
   })
 }
