@@ -26,6 +26,7 @@ ul {
 :root {
   --color-error: #ff4c4c;
   --color-delete: #f13737;
+  --color-overdue: #ff0000;
 }
 
 .container {
@@ -112,6 +113,12 @@ ul {
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+.overdue-message {
+  background-color: var(--color-overdue);
+  color: white;
+  font-family: cursive;
+  font-size: 2rem;
 }
 ul li {
   background: white;

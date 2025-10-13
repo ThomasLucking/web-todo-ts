@@ -71,7 +71,10 @@ const handleDeleteAll = (): void => {
   taskCreatedSection.innerHTML = ''
 }
 
-addTaskButton.addEventListener('click', createTask)
+addTaskButton.addEventListener('click', () => {
+  createTask()
+})
+
 deleteAllbutton.addEventListener('click', handleDeleteAll)
 inputValue.addEventListener('keydown', (event: KeyboardEvent) => {
   if (event.key === 'Enter') {

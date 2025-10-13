@@ -1,5 +1,12 @@
 import { DATE_RANGES, OVERDUE_MESSAGE } from '../types/index'
 
+const overdueMessageContainer =
+  document.querySelector<HTMLDivElement>('.overdueMessage')
+
+if (!overdueMessageContainer) {
+  console.error('Missing a Dom element')
+  throw new Error('Missing a DOM element. Aborting script.')
+}
 export const dayNumber = (date: Date) =>
   Math.floor(date.getTime() / (1000 * 60 * 60 * 24)) // calculates the day number by multiplying from seconds to minutes to hours to 24 hours.
 
@@ -33,13 +40,17 @@ export const getColorScheme = (dueDate: string, datenow: Date) => {
 export const checkOverdueTasks = (
   dueDate: string,
   datenow: Date,
+  taskid: string,
 ) => {
   const dueDateObj = new Date(dueDate)
-  if (dueDateObj < datenow) {
-    const overdueMessage = document.createElement('p')
-    overdueMessage.textContent = 'test'
-    overdueMessage.classList.add(OVERDUE_MESSAGE)
-
-
+  const oldmessage = document.querySelector(`[data-taskid="${taskid}"]`) //assign the data attribute to the message.
+  if (!oldmessage) {
+    if (dueDateObj < datenow) {
+      const overdueMessage = document.createElement('p')
+      overdueMessage.dataset.taskid = taskid
+      overdueMessage.classList.add(OVERDUE_MESSAGE)
+      overdueMessage.textContent = 'TASK IS OVERDUE!'
+      overdueMessageContainer.append(overdueMessage)
+    }
   }
 }
