@@ -55,7 +55,7 @@ export const createTask = async (): Promise<void> => {
   todoDates.value = ''
   const tasks = await getTasks(localStorage)
   tasks.push(newTask)
-  saveTasks(tasks, localStorage)
+  await saveTasks(tasks, localStorage)
 }
 
 export const loadTasks = async (): Promise<void> => {
@@ -64,7 +64,7 @@ export const loadTasks = async (): Promise<void> => {
   tasks.forEach(renderTask)
 }
 
-export const handleDeleteAll = (): void => {
-  deleteAllTasks(localStorage)
+export const handleDeleteAll = async (): Promise<void> => {
+  await deleteAllTasks(localStorage)
   taskCreatedSection.innerHTML = ''
 }

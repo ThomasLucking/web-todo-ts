@@ -1,6 +1,6 @@
 import type { Tasks } from '../types/index'
 
-const STORAGE_KEY = 'tasks'
+const STORAGE_KEY = 'tasks' as const
 
 // this function gets the tasks and uses try and catch if it fails to parse or gets the task.
 // a promise represents a value that might be available yet.
