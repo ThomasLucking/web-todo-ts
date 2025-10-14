@@ -1,12 +1,9 @@
 import './assets/style.css'
-import { clearError, showError } from './components/errorHandler'
 import {
-  attachTaskEventListeners,
-  createTaskElement,
-} from './components/taskElement'
-import type { Tasks } from './types'
-import { randomId } from './utils/IdGeneration'
-import { deleteAllTasks, getTasks, saveTasks } from './utils/storage'
+  createTask,
+  handleDeleteAll,
+  loadTasks,
+} from './hooks/hooksEventHandler'
 
 const addTaskButton =
   document.querySelector<HTMLButtonElement>('#add-todo-button')
@@ -29,46 +26,6 @@ if (
 ) {
   console.error('Missing a Dom element')
   throw new Error('Missing a DOM element. Aborting script.')
-}
-
-const renderTask = (task: Tasks): void => {
-  const elements = createTaskElement(task)
-  attachTaskEventListeners(elements, task)
-  taskCreatedSection.append(elements.taskItem)
-}
-
-const createTask = (): void => {
-  const value = inputValue.value.trim()
-
-  if (!value) {
-    showError('Please enter a task', errorMessage)
-    return
-  }
-
-  clearError(errorMessage)
-  const newTask: Tasks = {
-    text: value,
-    completed: false,
-    id: randomId(),
-    dueDate: todoDates.value,
-  }
-  renderTask(newTask)
-  inputValue.value = ''
-  todoDates.value = ''
-  const tasks = getTasks()
-  tasks.push(newTask)
-  saveTasks(tasks)
-}
-
-const loadTasks = (): void => {
-  const tasks = getTasks()
-  console.log(tasks)
-  tasks.forEach(renderTask)
-}
-
-const handleDeleteAll = (): void => {
-  deleteAllTasks()
-  taskCreatedSection.innerHTML = ''
 }
 
 addTaskButton.addEventListener('click', () => {

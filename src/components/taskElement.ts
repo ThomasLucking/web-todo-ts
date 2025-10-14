@@ -67,22 +67,29 @@ export const createTaskElement = (
   return { taskItem, checkbox, textSpan, deleteButton }
 }
 
-export const updateTaskState = (task: Tasks, completed: boolean): void => {
+export const updateTaskState = async (
+  task: Tasks,
+  completed: boolean,
+  storage: Storage = localStorage,
+): Promise<void> => {
   task.completed = completed
 
-  const tasks = getTasks()
+  const tasks = await getTasks(storage)
   const taskToUpdate = tasks.find((t) => t.id === task.id)
 
   if (taskToUpdate) {
     taskToUpdate.completed = completed
   }
 
-  saveTasks(tasks)
+  await saveTasks(tasks, storage)
 }
 
 const removeOverdueMessage = (taskId: string) => {
   const container = document.querySelector(`[data-taskid="${taskId}"]`)
-  container?.remove()
+  if (!container) {
+    throw new Error('No container found')
+  }
+  container.remove()
 }
 
 export const attachTaskEventListeners = (
@@ -95,7 +102,7 @@ export const attachTaskEventListeners = (
 ): void => {
   const { taskItem, checkbox, deleteButton } = elements
   checkOverdueTasks(task.dueDate, new Date(), task.id)
-  checkbox.addEventListener('change', () => {
+  checkbox.addEventListener('change', async () => {
     const isCompleted = checkbox.checked
 
     if (isCompleted) {
@@ -105,12 +112,12 @@ export const attachTaskEventListeners = (
       taskItem.classList.remove('completed')
     }
 
-    updateTaskState(task, isCompleted)
+    await updateTaskState(task, isCompleted)
   })
 
-  deleteButton.addEventListener('click', () => {
+  deleteButton.addEventListener('click', async () => {
+    await deleteTasks(task.id, localStorage)
     taskItem.remove()
-    deleteTasks(task.id)
     removeOverdueMessage(task.id)
   })
 }

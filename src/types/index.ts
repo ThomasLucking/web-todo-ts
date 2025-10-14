@@ -4,7 +4,7 @@ export interface Tasks {
   completed: boolean
   dueDate: string
 }
-
+// the as const assertion ensures the type is the exact string literal
 export const TODO_ITEM_CLASS = 'todo-item' as const
 export const CHECKBOX_ITEM_CLASS = 'todo-checkbox' as const
 export const SPAN_TEXT_CLASS = 'todo-span' as const
