@@ -1,3 +1,4 @@
+import { fetchTasks, saveTasksViaAPI } from '../apihandling/apihandle'
 import { clearError, showError } from '../components/errorHandler'
 import {
   attachTaskEventListeners,
@@ -5,7 +6,7 @@ import {
 } from '../components/taskElement'
 import type { Tasks } from '../types'
 import { randomId } from '../utils/IdGeneration'
-import { deleteAllTasks, getTasks, saveTasks } from '../utils/storage'
+import { deleteAllTasks } from '../utils/storage'
 
 const addTaskButton =
   document.querySelector<HTMLButtonElement>('#add-todo-button')
@@ -45,23 +46,24 @@ export const createTask = async (): Promise<void> => {
 
   clearError(errorMessage)
   const newTask: Tasks = {
+    id: randomId(),
     text: value,
     completed: false,
-    id: randomId(),
     dueDate: todoDates.value,
   }
   renderTask(newTask)
   inputValue.value = ''
   todoDates.value = ''
-  const tasks = await getTasks(localStorage)
-  tasks.push(newTask)
-  await saveTasks(tasks, localStorage)
+  console.log(newTask)
+  await saveTasksViaAPI(newTask)
 }
 
 export const loadTasks = async (): Promise<void> => {
-  const tasks = await getTasks(localStorage)
-  console.log(tasks)
-  tasks.forEach(renderTask)
+  const tasks: Tasks[] = await fetchTasks()
+
+  tasks.forEach((task) => {
+    renderTask(task)
+  })
 }
 
 export const handleDeleteAll = async (): Promise<void> => {

@@ -1,12 +1,9 @@
-
 import './assets/style.css'
 import {
   createTask,
   handleDeleteAll,
   loadTasks,
 } from './hooks/hooksEventHandler'
-
-
 
 const addTaskButton =
   document.querySelector<HTMLButtonElement>('#add-todo-button')

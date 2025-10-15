@@ -1,3 +1,4 @@
+import { deleteTasksViaAPI, saveTasksViaAPI } from '../apihandling/apihandle'
 import type { Tasks } from '../types'
 import {
   CHECKBOX_ITEM_CLASS,
@@ -7,7 +8,8 @@ import {
   TODO_ITEM_CLASS,
 } from '../types'
 import { checkOverdueTasks, getColorScheme } from '../utils/date'
-import { deleteTasks, getTasks, saveTasks } from '../utils/storage'
+
+// import { deleteTasks } from '../utils/storage'
 
 const createConfigTimeDate = (task: Tasks): HTMLParagraphElement => {
   const dueDate = document.createElement('p')
@@ -70,18 +72,9 @@ export const createTaskElement = (
 export const updateTaskState = async (
   task: Tasks,
   completed: boolean,
-  storage: Storage = localStorage,
 ): Promise<void> => {
   task.completed = completed
-
-  const tasks = await getTasks(storage)
-  const taskToUpdate = tasks.find((t) => t.id === task.id)
-
-  if (taskToUpdate) {
-    taskToUpdate.completed = completed
-  }
-
-  await saveTasks(tasks, storage)
+  await saveTasksViaAPI(task)
 }
 
 const removeOverdueMessage = (taskId: string) => {
@@ -116,7 +109,7 @@ export const attachTaskEventListeners = (
   })
 
   deleteButton.addEventListener('click', async () => {
-    await deleteTasks(task.id, localStorage)
+    await deleteTasksViaAPI(task.id)
     taskItem.remove()
     removeOverdueMessage(task.id)
   })

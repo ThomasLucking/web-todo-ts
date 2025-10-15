@@ -1,3 +1,3 @@
 export const randomId = (): string => {
-  return crypto.randomUUID()
+  return Math.random().toString(16).slice(2)
 }
