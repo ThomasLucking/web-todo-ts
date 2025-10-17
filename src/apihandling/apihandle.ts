@@ -195,4 +195,3 @@ export const updateTaskStateViaAPI = async (
     throw new Error('cannot delete task')
   }
 }
-
