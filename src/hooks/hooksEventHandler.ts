@@ -1,11 +1,18 @@
+import type { ApiTask, SavedApiTask } from '../apihandling/apihandle'
+import {
+  deleteAllTasksViaAPI,
+  fetchTasks,
+  saveTasksViaAPI,
+} from '../apihandling/apihandle'
 import { clearError, showError } from '../components/errorHandler'
 import {
   attachTaskEventListeners,
   createTaskElement,
 } from '../components/taskElement'
-import type { Tasks } from '../types'
-import { randomId } from '../utils/IdGeneration'
-import { deleteAllTasks, getTasks, saveTasks } from '../utils/storage'
+import { PreventTaskCreation } from '../utils/date'
+
+// import { Tasks } from '../types'
+//import { randomId } from '../utils/IdGeneration'
 
 const addTaskButton =
   document.querySelector<HTMLButtonElement>('#add-todo-button')
@@ -29,14 +36,25 @@ if (
   console.error('Missing a Dom element')
   throw new Error('Missing a DOM element. Aborting script.')
 }
-export const renderTask = (task: Tasks): void => {
+export const renderTask = (task: SavedApiTask): void => {
   const elements = createTaskElement(task)
   attachTaskEventListeners(elements, task)
+  if (task.done) {
+    elements.checkbox.checked = true
+    elements.taskItem.classList.add('completed')
+  }
   taskCreatedSection.append(elements.taskItem)
 }
 
 export const createTask = async (): Promise<void> => {
   const value = inputValue.value.trim()
+
+  try {
+    PreventTaskCreation(todoDates.value, new Date())
+  } catch (error) {
+    console.error(error)
+    return
+  }
 
   if (!value) {
     showError('Please enter a task', errorMessage)
@@ -44,27 +62,31 @@ export const createTask = async (): Promise<void> => {
   }
 
   clearError(errorMessage)
-  const newTask: Tasks = {
-    text: value,
-    completed: false,
-    id: randomId(),
-    dueDate: todoDates.value,
+  // in createTask
+  const newTask: ApiTask = {
+    title: value,
+    content: value,
+    done: false,
+    due_date: todoDates.value || null,
   }
-  renderTask(newTask)
+
   inputValue.value = ''
   todoDates.value = ''
-  const tasks = await getTasks(localStorage)
-  tasks.push(newTask)
-  await saveTasks(tasks, localStorage)
+  // console.log(newTask)
+  const savedTask = await saveTasksViaAPI(newTask)
+  console.log('Saved task returned:', savedTask)
+  renderTask(savedTask)
+  console.log('Called renderTask')
 }
 
 export const loadTasks = async (): Promise<void> => {
-  const tasks = await getTasks(localStorage)
-  console.log(tasks)
-  tasks.forEach(renderTask)
+  const tasks: SavedApiTask[] = await fetchTasks()
+  tasks.forEach((task) => {
+    renderTask(task)
+  })
 }
 
 export const handleDeleteAll = async (): Promise<void> => {
-  await deleteAllTasks(localStorage)
+  await deleteAllTasksViaAPI()
   taskCreatedSection.innerHTML = ''
 }
