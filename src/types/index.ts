@@ -1,9 +1,8 @@
-export interface Tasks {
-  id: string
-  text: string
-  completed: boolean
-  dueDate: string
-}
+// export interface Tasks {
+//   text: string
+//   completed: boolean
+//   dueDate: string
+// }
 // the as const assertion ensures the type is the exact string literal
 export const TODO_ITEM_CLASS = 'todo-item' as const
 export const CHECKBOX_ITEM_CLASS = 'todo-checkbox' as const

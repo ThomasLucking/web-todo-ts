@@ -1,5 +1,11 @@
-import { deleteTasksViaAPI, saveTasksViaAPI } from '../apihandling/apihandle'
-import type { Tasks } from '../types'
+// import type { Tasks } from '../types'
+import type { SavedApiTask } from '../apihandling/apihandle'
+import {
+  deleteTasksViaAPI,
+  saveTasksViaAPI,
+  updateTaskStateViaAPI,
+} from '../apihandling/apihandle'
+
 import {
   CHECKBOX_ITEM_CLASS,
   DELETE_TASK_CLASS,
@@ -11,21 +17,21 @@ import { checkOverdueTasks, getColorScheme } from '../utils/date'
 
 // import { deleteTasks } from '../utils/storage'
 
-const createConfigTimeDate = (task: Tasks): HTMLParagraphElement => {
+const createConfigTimeDate = (task: SavedApiTask): HTMLParagraphElement => {
   const dueDate = document.createElement('p')
   dueDate.classList.add(TODO_DATE)
 
   const time = document.createElement('time')
   const datenow = new Date()
 
-  if (task.dueDate) {
-    const dueDateObj = new Date(task.dueDate)
-    const colorScheme = getColorScheme(task.dueDate, datenow)
+  if (task.due_date) {
+    const dueDateObj = new Date(task.due_date)
+    const colorScheme = getColorScheme(task.due_date, datenow)
 
     time.style.backgroundColor = colorScheme.bg
     time.style.color = colorScheme.color
 
-    time.setAttribute('datetime', task.dueDate)
+    time.setAttribute('datetime', task.due_date)
     time.textContent = dueDateObj.toLocaleDateString('de-CH')
   } else {
     time.textContent = 'no due date'
@@ -36,7 +42,7 @@ const createConfigTimeDate = (task: Tasks): HTMLParagraphElement => {
 }
 
 export const createTaskElement = (
-  task: Tasks,
+  task: SavedApiTask,
 ): {
   taskItem: HTMLLIElement
   checkbox: HTMLInputElement
@@ -45,17 +51,17 @@ export const createTaskElement = (
 } => {
   const taskItem = document.createElement('li')
   taskItem.classList.add(TODO_ITEM_CLASS)
-  if (task.completed) {
+  if (task.done) {
     taskItem.classList.add('completed')
   }
 
   const checkbox = document.createElement('input')
   checkbox.type = 'checkbox'
-  checkbox.checked = task.completed
+  checkbox.checked = task.done
   checkbox.classList.add(CHECKBOX_ITEM_CLASS)
 
   const textSpan = document.createElement('span')
-  textSpan.textContent = task.text
+  textSpan.textContent = task.title
   textSpan.classList.add(SPAN_TEXT_CLASS)
 
   const deleteButton = document.createElement('button')
@@ -70,17 +76,17 @@ export const createTaskElement = (
 }
 
 export const updateTaskState = async (
-  task: Tasks,
+  task: SavedApiTask,
   completed: boolean,
 ): Promise<void> => {
-  task.completed = completed
+  task.done = completed
   await saveTasksViaAPI(task)
 }
 
-const removeOverdueMessage = (taskId: string) => {
+const removeOverdueMessage = (taskId: number) => {
   const container = document.querySelector(`[data-taskid="${taskId}"]`)
   if (!container) {
-    throw new Error('No container found')
+    return
   }
   container.remove()
 }
@@ -91,10 +97,13 @@ export const attachTaskEventListeners = (
     checkbox: HTMLInputElement
     deleteButton: HTMLButtonElement
   },
-  task: Tasks,
+  task: SavedApiTask,
 ): void => {
   const { taskItem, checkbox, deleteButton } = elements
-  checkOverdueTasks(task.dueDate, new Date(), task.id)
+  // check if  only checked tasks for incomplete tasks.
+  if (!task.done) {
+    checkOverdueTasks(task.due_date ?? '', new Date(), task.id)
+  }
   checkbox.addEventListener('change', async () => {
     const isCompleted = checkbox.checked
 
@@ -105,7 +114,7 @@ export const attachTaskEventListeners = (
       taskItem.classList.remove('completed')
     }
 
-    await updateTaskState(task, isCompleted)
+    await updateTaskStateViaAPI(task, isCompleted)
   })
 
   deleteButton.addEventListener('click', async () => {

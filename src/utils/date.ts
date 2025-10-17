@@ -1,9 +1,11 @@
+import { showError } from '../components/errorHandler'
 import { DATE_RANGES, OVERDUE_MESSAGE } from '../types/index'
 
 const overdueMessageContainer =
   document.querySelector<HTMLDivElement>('.overdue-Message')
+const errorMessage = document.querySelector<HTMLDivElement>('#error-message')
 
-if (!overdueMessageContainer) {
+if (!overdueMessageContainer || !errorMessage) {
   console.error('Missing a Dom element')
   throw new Error('Missing a DOM element. Aborting script.')
 }
@@ -22,10 +24,42 @@ export const dateRange = (
   return diffInDays >= daysMin && diffInDays <= daysMax
 }
 
+export const PreventTaskCreation = (dueDate: string, datenow: Date) => {
+  const dueDateObj = new Date(dueDate)
+
+  const dueDateOnly = new Date(
+    dueDateObj.getFullYear(),
+    dueDateObj.getMonth(),
+    dueDateObj.getDate(),
+  )
+  const todayOnly = new Date(
+    datenow.getFullYear(),
+    datenow.getMonth(),
+    datenow.getDate(),
+  )
+
+  if (dueDateOnly < todayOnly) {
+    showError('Please enter a valid due date', errorMessage)
+    throw new Error('Due date cannot be in the past')
+  }
+  return
+}
+
 export const getColorScheme = (dueDate: string, datenow: Date) => {
   const dueDateObj = new Date(dueDate)
 
-  if (dueDateObj < datenow) {
+  const dueDateOnly = new Date(
+    dueDateObj.getFullYear(),
+    dueDateObj.getMonth(),
+    dueDateObj.getDate(),
+  )
+  const todayOnly = new Date(
+    datenow.getFullYear(),
+    datenow.getMonth(),
+    datenow.getDate(),
+  )
+
+  if (dueDateOnly < todayOnly) {
     return DATE_RANGES.OVERDUE
   }
   if (dateRange(dueDate, 0, 0)) {
@@ -40,14 +74,14 @@ export const getColorScheme = (dueDate: string, datenow: Date) => {
 export const checkOverdueTasks = (
   dueDate: string,
   datenow: Date,
-  taskid: string,
+  taskid: number,
 ): void => {
   const dueDateObj = new Date(dueDate)
   const oldmessage = document.querySelector(`[data-taskid="${taskid}"]`) //assign the data attribute to the message.
   if (!oldmessage) {
     if (dayNumber(dueDateObj) < dayNumber(datenow)) {
       const overdueMessage = document.createElement('p')
-      overdueMessage.dataset.taskid = taskid
+      overdueMessage.dataset.taskid = taskid.toString()
       overdueMessage.classList.add(OVERDUE_MESSAGE)
       overdueMessage.textContent = 'Task is overdue'
       overdueMessageContainer.append(overdueMessage)
