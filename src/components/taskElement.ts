@@ -2,7 +2,6 @@
 import type { SavedApiTask } from '../apihandling/apihandle'
 import {
   deleteTasksViaAPI,
-  saveTasksViaAPI,
   updateTaskStateViaAPI,
 } from '../apihandling/apihandle'
 
@@ -75,13 +74,7 @@ export const createTaskElement = (
   return { taskItem, checkbox, textSpan, deleteButton }
 }
 
-export const updateTaskState = async (
-  task: SavedApiTask,
-  completed: boolean,
-): Promise<void> => {
-  task.done = completed
-  await saveTasksViaAPI(task)
-}
+
 
 const removeOverdueMessage = (taskId: number) => {
   const container = document.querySelector(`[data-taskid="${taskId}"]`)

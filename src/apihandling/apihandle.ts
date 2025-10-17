@@ -1,4 +1,5 @@
 const API_URL = 'https://api.todos.in.jt-lab.ch/todos'
+
 const duration_timer = document.querySelector<HTMLDivElement>('.duration')
 export interface ApiTask {
   title: string
@@ -97,7 +98,7 @@ export const deleteTasksViaAPI = async (taskId: number): Promise<void> => {
       headers: { 'Content-Type': 'application/json' },
     })
     if (!response.ok) {
-      alert(`Error with the API:${response.status}`)
+      throw new Error(`Error with the API: ${response.status}`)
     }
     if (response.status === 204) {
       console.log('Post succesfully deleted')
@@ -133,7 +134,7 @@ export const deleteAllTasksViaAPI = async (): Promise<void> => {
       headers: { 'Content-Type': 'application/json' },
     })
     if (!response.ok) {
-      alert(`Error with the API:${response.status}`)
+      throw new Error(`Error with the API: ${response.status}`)
     }
     if (response.status === 204) {
       console.log('Post succesfully deleted')
@@ -192,6 +193,6 @@ export const updateTaskStateViaAPI = async (
         if (duration_timer) duration_timer.textContent = ''
       }, 3000)
     }
-    throw new Error('cannot delete task')
+    throw new Error('cannot update task')
   }
 }

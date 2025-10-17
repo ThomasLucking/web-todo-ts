@@ -49,7 +49,12 @@ export const renderTask = (task: SavedApiTask): void => {
 export const createTask = async (): Promise<void> => {
   const value = inputValue.value.trim()
 
-  PreventTaskCreation(todoDates.value, new Date())
+  try {
+    PreventTaskCreation(todoDates.value, new Date())
+  } catch (error) {
+    console.error(error) 
+    return
+  }
 
   if (!value) {
     showError('Please enter a task', errorMessage)
