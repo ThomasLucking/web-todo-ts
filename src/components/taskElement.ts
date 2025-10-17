@@ -74,8 +74,6 @@ export const createTaskElement = (
   return { taskItem, checkbox, textSpan, deleteButton }
 }
 
-
-
 const removeOverdueMessage = (taskId: number) => {
   const container = document.querySelector(`[data-taskid="${taskId}"]`)
   if (!container) {

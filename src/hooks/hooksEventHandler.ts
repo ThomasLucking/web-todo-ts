@@ -52,7 +52,7 @@ export const createTask = async (): Promise<void> => {
   try {
     PreventTaskCreation(todoDates.value, new Date())
   } catch (error) {
-    console.error(error) 
+    console.error(error)
     return
   }
 
