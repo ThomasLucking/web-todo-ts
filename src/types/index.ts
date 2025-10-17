@@ -10,7 +10,7 @@ export const SPAN_TEXT_CLASS = 'todo-span' as const
 export const DELETE_TASK_CLASS = 'todo-delete' as const
 export const TODO_DATE = 'todo-date' as const
 export const OVERDUE_MESSAGE = 'overdue-message' as const
-
+export const CATEGORY_ITEM_CLASS = 'category-item' as const
 export const DATE_RANGES = {
   OVERDUE: { bg: 'red', color: 'black' },
   TODAY: { bg: 'orange', color: 'black' },

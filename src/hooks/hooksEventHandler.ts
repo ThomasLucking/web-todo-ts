@@ -1,9 +1,9 @@
-import type { ApiTask, SavedApiTask } from '../apihandling/apihandle'
+import type { ApiTask, SavedApiTask } from '../apihandling/ApiClient'
 import {
   deleteAllTasksViaAPI,
   fetchTasks,
   saveTasksViaAPI,
-} from '../apihandling/apihandle'
+} from '../apihandling/ApiClient'
 import { clearError, showError } from '../components/errorHandler'
 import {
   attachTaskEventListeners,
@@ -14,24 +14,26 @@ import { PreventTaskCreation } from '../utils/date'
 // import { Tasks } from '../types'
 //import { randomId } from '../utils/IdGeneration'
 
-const addTaskButton =
-  document.querySelector<HTMLButtonElement>('#add-todo-button')
+
 const inputValue = document.querySelector<HTMLInputElement>('#todo-input')
 const taskCreatedSection =
   document.querySelector<HTMLUListElement>('#todo-elements')
 const errorMessage = document.querySelector<HTMLDivElement>('#error-message')
-
-const deleteAllbutton = document.querySelector<HTMLButtonElement>('#delete-all')
-
 const todoDates = document.querySelector<HTMLInputElement>('#todo-date-input')
+const createcategoryvalue = document.querySelector<HTMLInputElement>(
+  '#category-name-input',
+)
+const createtodoCategory = document.querySelector<HTMLUListElement>(
+  '#todo-category-elements',
+)
 
 if (
-  !addTaskButton ||
   !inputValue ||
   !taskCreatedSection ||
   !errorMessage ||
-  !deleteAllbutton ||
-  !todoDates
+  !todoDates ||
+  !createtodoCategory ||
+  !createcategoryvalue
 ) {
   console.error('Missing a Dom element')
   throw new Error('Missing a DOM element. Aborting script.')
@@ -78,6 +80,7 @@ export const createTask = async (): Promise<void> => {
   renderTask(savedTask)
   console.log('Called renderTask')
 }
+  
 
 export const loadTasks = async (): Promise<void> => {
   const tasks: SavedApiTask[] = await fetchTasks()

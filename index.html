@@ -11,21 +11,28 @@
 
 <body>
   <script type="module" src="/src/main.ts"></script>
-  <div class="container">
-    <div class="overdue-Message"></div>
-    <h1>My Tasks</h1>
-    <label for="todo-input">Add Tasks</label>
-    <div id="error-message">
-    </div>
-    <div class="tasks-interactivity">
-      <input type="text" id="todo-input" placeholder="Add a new Task">
-      <input type="date" id="todo-date-input" pattern="\d{4}-\d{2}-\d{2}">
-      <button id="add-todo-button">Add Task</button>
-      <button id="delete-all">Delete All</button>
-    </div>
-    <div class="list-container">
-      <div class="duration"></div>
-      <ul id="todo-elements"></ul>
+  <div class="main-container">
+    <div class="container">
+      <div class="overdue-Message"></div>
+      <h1>My Tasks</h1>
+      <label for="todo-input">Add Tasks</label>
+      <div id="error-message">
+      </div>
+      <div class="tasks-interactivity">
+        <input type="text" id="todo-input" placeholder="Add a new Task">
+        <input type="date" id="todo-date-input" pattern="\d{4}-\d{2}-\d{2}">
+        <button id="add-todo-button">Add Task</button>
+        <button id="delete-all">Delete All</button>
+        <div class="categories-section">
+          <input type="text" id="category-name-input" placeholder="Create new Category">
+          <button id="create-category-button">Create Category</button>
+          <ul id="category-items"></ul>
+        </div>
+      </div>
+      <div class="list-container">
+        <div class="duration"></div>
+        <ul id="todo-elements"></ul>
+      </div>
     </div>
   </div>
 </body>

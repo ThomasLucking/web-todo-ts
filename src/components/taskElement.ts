@@ -1,9 +1,10 @@
 // import type { Tasks } from '../types'
-import type { SavedApiTask } from '../apihandling/apihandle'
+import type { SavedApiTask } from '../apihandling/ApiClient'
 import {
   deleteTasksViaAPI,
   updateTaskStateViaAPI,
-} from '../apihandling/apihandle'
+} from '../apihandling/ApiClient'
+import { ApiCategory } from '../apihandling/ApiCategories'
 
 import {
   CHECKBOX_ITEM_CLASS,
@@ -13,8 +14,6 @@ import {
   TODO_ITEM_CLASS,
 } from '../types'
 import { checkOverdueTasks, getColorScheme } from '../utils/date'
-
-// import { deleteTasks } from '../utils/storage'
 
 const createConfigTimeDate = (task: SavedApiTask): HTMLParagraphElement => {
   const dueDate = document.createElement('p')
@@ -73,7 +72,18 @@ export const createTaskElement = (
 
   return { taskItem, checkbox, textSpan, deleteButton }
 }
+export const createCategoryElement = (
+  categoryName: ApiCategory,
+): HTMLLIElement => {
 
+  const categoryItem = document.createElement('li')
+  categoryItem.classList.add('category-item')
+  categoryItem.textContent = categoryName.title
+
+  
+  return categoryItem
+  
+}
 const removeOverdueMessage = (taskId: number) => {
   const container = document.querySelector(`[data-taskid="${taskId}"]`)
   if (!container) {

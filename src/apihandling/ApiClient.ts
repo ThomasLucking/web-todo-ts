@@ -1,6 +1,7 @@
 const API_URL = 'https://api.todos.in.jt-lab.ch/todos'
 
 const duration_timer = document.querySelector<HTMLDivElement>('.duration')
+
 export interface ApiTask {
   title: string
   content: string
