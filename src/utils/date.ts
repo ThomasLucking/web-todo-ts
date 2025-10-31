@@ -1,4 +1,4 @@
-import { showError } from '../components/errorHandler'
+import { showError } from '../Task components/errorHandler'
 import { DATE_RANGES, OVERDUE_MESSAGE } from '../types/index'
 
 const overdueMessageContainer =
