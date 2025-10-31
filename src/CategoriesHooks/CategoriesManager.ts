@@ -7,7 +7,7 @@ import type {
   SavedCategoryAPI,
 } from '../CategoryApiHandling/CategoryAPI'
 import { clearError, showError } from '../Task components/errorHandler'
-import { CATEGORY_DELETE_CLASS } from '../types'
+import { CATEGORY_DELETE_CLASS, DEFAULT_BLUE_COLOR } from '../types'
 
 class CategoryManager {
   private api: CategoryAPI
@@ -35,20 +35,35 @@ class CategoryManager {
   constructor(api: CategoryAPI) {
     this.api = api
 
-    this.addCategoryButton = document.querySelector<HTMLButtonElement>(
+    const addCategoryButton = document.querySelector<HTMLButtonElement>(
       '#create-category-button',
-    )!
-    this.inputValue = document.querySelector<HTMLInputElement>(
+    )
+    const inputValue = document.querySelector<HTMLInputElement>(
       '#category-name-input',
-    )!
-    this.colorInputValue =
-      document.querySelector<HTMLInputElement>('#categories-color')!
-    this.colorInputValue.value = '#0000ff'
+    )
+    const colorInputValue =
+      document.querySelector<HTMLInputElement>('#categories-color')
+    const categoryListSection =
+      document.querySelector<HTMLUListElement>('#category-items')
+    const errorMessage =
+      document.querySelector<HTMLDivElement>('#error-message')
 
-    this.categoryListSection =
-      document.querySelector<HTMLUListElement>('#category-items')!
-    this.errorMessage =
-      document.querySelector<HTMLDivElement>('#error-message')!
+    if (
+      !addCategoryButton ||
+      !inputValue ||
+      !colorInputValue ||
+      !categoryListSection ||
+      !errorMessage
+    ) {
+      throw new Error('One or more required elements do not exist')
+    }
+
+    this.addCategoryButton = addCategoryButton
+    this.inputValue = inputValue
+    this.colorInputValue = colorInputValue
+    this.colorInputValue.value = DEFAULT_BLUE_COLOR
+    this.categoryListSection = categoryListSection
+    this.errorMessage = errorMessage
 
     this.validateDOMElements()
     this.initialize()
@@ -81,7 +96,7 @@ class CategoryManager {
 
     const newCategory: ApiCategory = {
       title: name,
-      color: color || '#cccccc',
+      color: color || DEFAULT_BLUE_COLOR,
     }
 
     this.inputValue.value = ''
@@ -111,8 +126,10 @@ class CategoryManager {
   }
 
   private async loadCategories(): Promise<void> {
-    const categories: SavedCategoryAPI[] = await this.api.fetchTasks()
-    categories.forEach((category) => this.renderCategory(category))
+    const categories: SavedCategoryAPI[] = await this.api.fetchCategories()
+    for (const category of categories) {
+      this.renderCategory(category)
+    }
   }
 }
 

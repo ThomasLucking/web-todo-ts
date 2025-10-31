@@ -1,5 +1,5 @@
 // API handling file original
-
+import { BaseAPI } from '../utils/Baseapi'
 export interface ApiTask {
   title: string
   content: string
@@ -9,57 +9,10 @@ export interface ApiTask {
 
 export type SavedApiTask = ApiTask & { id: number }
 
-export class TaskAPI {
+export class TaskAPI extends BaseAPI {
   private API_URL = 'https://api.todos.in.jt-lab.ch/todos'
-  private duration_timer = document.querySelector<HTMLDivElement>('.duration')
+  protected duration_timer = document.querySelector<HTMLDivElement>('.duration')
 
-  private updateDurationTimer(message: string, duration?: number) {
-    if (!this.duration_timer) {
-      throw new Error('Duration timer element not found')
-    }
-    this.duration_timer.textContent = message
-    if (duration) {
-      setTimeout(() => {
-        if (this.duration_timer) {
-          this.duration_timer.textContent = ''
-        }
-      }, duration)
-    }
-  }
-  private async request(
-    url: string,
-    method: string,
-    messages: { loading: string; success: string; error: string },
-    headers?: Record<string, string>, // this is to store keys and values as strings of any type of data.
-    // Example: { "Content-Type": "application/json", "Authorization": "Bearer xyz" }
-    body?: any,
-  ): Promise<any> {
-    try {
-      this.updateDurationTimer(messages.loading)
-
-      const response = await fetch(url, {
-        method: method,
-        headers: headers || {
-          'Content-Type': 'application/json',
-          Prefer: 'return=representation',
-        },
-        body: body ? JSON.stringify(body) : undefined,
-      })
-
-      if (!response.ok) {
-        throw new Error(`Error with the API: ${response.status}`)
-      }
-
-      this.updateDurationTimer(messages.success, 1500)
-
-      const data = await response.json()
-      return data
-    } catch (error) {
-      this.updateDurationTimer(messages.error, 3000)
-      console.error(error)
-      throw error
-    }
-  }
   saveTasksViaAPI = async (task: ApiTask): Promise<SavedApiTask> => {
     const payload = {
       title: task.title,
@@ -91,7 +44,7 @@ export class TaskAPI {
       success: 'Tasks successfully loaded!',
       error: 'Failed to load tasks',
     })
-    return data
+    return data as SavedApiTask[]
   }
   async deleteTasksViaAPI(taskId: number): Promise<void> {
     await this.request(`${this.API_URL}?id=eq.${taskId}`, 'DELETE', {

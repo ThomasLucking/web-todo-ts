@@ -5,6 +5,7 @@ import type {
 import {
   CATEGORY_DELETE_CLASS,
   CATEGORY_ITEM_CLASS,
+  DEFAULT_COLOR,
   EDITED_CATEGORY_ITEM_CLASS,
   SPAN_CATEGORY_TEXT,
 } from '../types/index'
@@ -28,7 +29,7 @@ class Category {
     this.textSpan = document.createElement('span')
     this.textSpan.textContent = this.data.title
     this.textSpan.classList.add(SPAN_CATEGORY_TEXT)
-    this.textSpan.style.backgroundColor = this.data.color || '#cccccc'
+    this.textSpan.style.backgroundColor = this.data.color || DEFAULT_COLOR
 
     this.deleteButton = document.createElement('button')
     this.deleteButton.textContent = 'Remove'
@@ -56,11 +57,6 @@ class EditCategory extends Category {
   private titleInput!: HTMLInputElement
   private colorInput!: HTMLInputElement
   private ItemContainer!: HTMLLIElement
-  
-
-  constructor(data: SavedCategoryAPI, api: CategoryAPI) {
-    super(data, api) // call the parents contructor.
-  }
 
   render(): HTMLLIElement {
     this.ItemContainer = document.createElement('li')

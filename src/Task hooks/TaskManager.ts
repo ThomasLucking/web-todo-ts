@@ -33,17 +33,35 @@ class TaskManager {
   constructor(api: TaskAPI) {
     this.api = api
 
-    this.addTaskButton =
-      document.querySelector<HTMLButtonElement>('#add-todo-button')!
-    this.inputValue = document.querySelector<HTMLInputElement>('#todo-input')!
-    this.taskCreatedSection =
-      document.querySelector<HTMLUListElement>('#todo-elements')!
-    this.deleteAllbutton =
-      document.querySelector<HTMLButtonElement>('#delete-all')!
-    this.errorMessage =
-      document.querySelector<HTMLDivElement>('#error-message')!
-    this.todoDates =
-      document.querySelector<HTMLInputElement>('#todo-date-input')!
+    const addTaskButton =
+      document.querySelector<HTMLButtonElement>('#add-todo-button')
+    const inputValue = document.querySelector<HTMLInputElement>('#todo-input')
+    const taskCreatedSection =
+      document.querySelector<HTMLUListElement>('#todo-elements')
+    const deleteAllbutton =
+      document.querySelector<HTMLButtonElement>('#delete-all')
+    const errorMessage =
+      document.querySelector<HTMLDivElement>('#error-message')
+    const todoDates =
+      document.querySelector<HTMLInputElement>('#todo-date-input')
+
+    if (
+      !addTaskButton ||
+      !inputValue ||
+      !taskCreatedSection ||
+      !deleteAllbutton ||
+      !errorMessage ||
+      !todoDates
+    ) {
+      throw new Error('One or more required elements do not exist')
+    }
+
+    this.addTaskButton = addTaskButton
+    this.inputValue = inputValue
+    this.taskCreatedSection = taskCreatedSection
+    this.deleteAllbutton = deleteAllbutton
+    this.errorMessage = errorMessage
+    this.todoDates = todoDates
 
     this.validateDOMElements()
     this.initialize()

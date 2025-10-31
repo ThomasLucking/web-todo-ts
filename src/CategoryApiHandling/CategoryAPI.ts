@@ -1,5 +1,5 @@
 // API handling file original
-
+import { BaseAPI } from '../utils/Baseapi'
 export interface ApiCategory {
   title: string
   color: string
@@ -7,65 +7,19 @@ export interface ApiCategory {
 
 export type SavedCategoryAPI = ApiCategory & { id: number }
 
-export class CategoryAPI {
+export class CategoryAPI extends BaseAPI {
   private API_URL = 'https://api.todos.in.jt-lab.ch/categories'
-  private duration_timer = document.querySelector<HTMLDivElement>(
+
+  protected duration_timer = document.querySelector<HTMLDivElement>(
     '.durationCategories',
   )
 
-  private updateDurationTimer(message: string, duration?: number) {
-    if (!this.duration_timer) {
-      throw new Error('Duration timer element not found')
-    }
-    this.duration_timer.textContent = message
-    if (duration) {
-      setTimeout(() => {
-        if (this.duration_timer) {
-          this.duration_timer.textContent = ''
-        }
-      }, duration)
-    }
-  }
-  private async request(
-    url: string,
-    method: string,
-    messages: { loading: string; success: string; error: string },
-    headers?: Record<string, string>, // this is to store keys and values as strings of any type of data.
-    // Example: { "Content-Type": "application/json", "Authorization": "Bearer xyz" }
-    body?: any,
-  ): Promise<any> {
-    try {
-      this.updateDurationTimer(messages.loading)
-
-      const response = await fetch(url, {
-        method: method,
-        headers: headers || {
-          'Content-Type': 'application/json',
-          Prefer: 'return=representation',
-        },
-        body: body ? JSON.stringify(body) : undefined,
-      })
-
-      if (!response.ok) {
-        throw new Error(`Error with the API: ${response.status}`)
-      }
-
-      this.updateDurationTimer(messages.success, 1500)
-
-      const data = await response.json()
-      return data
-    } catch (error) {
-      this.updateDurationTimer(messages.error, 3000)
-      console.error(error)
-      throw error
-    }
-  }
   saveCategoriesViaAPI = async (
-    Category: ApiCategory,
+    category: ApiCategory,
   ): Promise<SavedCategoryAPI> => {
     const payload = {
-      title: Category.title,
-      color: Category.color,
+      title: category.title,
+      color: category.color,
     }
 
     const data = await this.request(
@@ -74,7 +28,7 @@ export class CategoryAPI {
       {
         loading: '...loading',
         success: 'Categories successfully saved.',
-        error: 'Failed to Category task',
+        error: 'Failed to Category ',
       },
       {
         'Content-Type': 'application/json',
@@ -85,13 +39,13 @@ export class CategoryAPI {
 
     return data[0] as SavedCategoryAPI
   }
-  async fetchTasks(): Promise<SavedCategoryAPI[]> {
+  async fetchCategories(): Promise<SavedCategoryAPI[]> {
     const data = await this.request(this.API_URL, 'GET', {
       loading: 'Loading tasks...',
       success: 'Categories successfully loaded!',
-      error: 'Failed to load Categorys',
+      error: 'Failed to load Categories',
     })
-    return data
+    return data as SavedCategoryAPI[]
   }
   async deleteCategoriesViaAPI(taskId: number): Promise<void> {
     await this.request(`${this.API_URL}?id=eq.${taskId}`, 'DELETE', {

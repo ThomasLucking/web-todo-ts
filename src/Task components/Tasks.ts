@@ -86,8 +86,8 @@ class Task {
     container.remove()
   }
   private attachEvents(): void {
-    if (!this.data.done) {
-      checkOverdueTasks(this.data.due_date ?? '', new Date(), this.data.id)
+    if (this.data.due_date) {
+      checkOverdueTasks(this.data.due_date, new Date(), this.data.id)
     }
     this.checkbox.addEventListener('change', async () => {
       const isCompleted = this.checkbox.checked
