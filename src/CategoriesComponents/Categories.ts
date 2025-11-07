@@ -75,6 +75,8 @@ class EditCategory extends Category {
     let titleEdited = false
     let colorEdited = false
 
+    // this function is used to re attach the event listener to the category after exiting edit mode.
+    // the fn parameter is used to perform logic after the category is rendered
     const updatedCategory = (fn?: (updatedElement: HTMLLIElement) => void) => {
       const updatedCategoryInstance = new Category(this.data, this.api)
       const updatedElement = updatedCategoryInstance.render()

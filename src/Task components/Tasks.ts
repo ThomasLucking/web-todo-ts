@@ -1,6 +1,7 @@
 // taskelements in the original file.
 
 import type { SavedApiTask, TaskAPI } from '../TaskApiHandling/TaskAPI'
+
 import {
   CHECKBOX_ITEM_CLASS,
   DELETE_TASK_CLASS,
@@ -10,9 +11,10 @@ import {
 } from '../types/index'
 import { checkOverdueTasks, getColorScheme } from '../utils/date'
 
-class Task {
+export class Task {
   private data: SavedApiTask
   private api: TaskAPI
+
   private taskItem!: HTMLLIElement
   private checkbox!: HTMLInputElement
   private deleteButton!: HTMLButtonElement
@@ -21,6 +23,7 @@ class Task {
   constructor(data: SavedApiTask, api: TaskAPI) {
     this.data = data
     this.api = api
+    
   }
 
   private createConfigTimeDate(): HTMLParagraphElement {
@@ -78,6 +81,7 @@ class Task {
 
     return this.taskItem
   }
+
   private removeOverdueMessage(): void {
     const container = document.querySelector(`[data-taskid="${this.data.id}"]`)
     if (!container) {

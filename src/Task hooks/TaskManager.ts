@@ -1,14 +1,21 @@
 // Hooksevent handler in original
+/*
+taskName = task.name
+categoryName = categories.find(c => c.id === task.categoryId).name
+categoryColor = categories.find(c => c.id === task.categoryId).color
+*/
 
+import type { AssociateCatgoriesAPI } from '../AssociateCategories/AssociateAPI'
+import type { CategoryAPI } from '../CategoryApiHandling/CategoryAPI'
 import { clearError, showError } from '../Task components/errorHandler'
-import Task from '../Task components/Tasks'
+import { Task } from '../Task components/Tasks'
 import type { ApiTask, SavedApiTask, TaskAPI } from '../TaskApiHandling/TaskAPI'
 import { PreventTaskCreation } from '../utils/date'
-
-class TaskManager {
+export class TaskManager {
   private api: TaskAPI
   private tasks: Task[] = []
-
+  private categoryapi: AssociateCatgoriesAPI
+  private categorys: CategoryAPI
   private addTaskButton!: HTMLButtonElement
   private inputValue!: HTMLInputElement
   private taskCreatedSection!: HTMLUListElement
@@ -30,9 +37,14 @@ class TaskManager {
     }
   }
 
-  constructor(api: TaskAPI) {
+  constructor(
+    api: TaskAPI,
+    categoryapi: AssociateCatgoriesAPI,
+    categorys: CategoryAPI,
+  ) {
     this.api = api
-
+    this.categoryapi = categoryapi
+    this.categorys = categorys
     const addTaskButton =
       document.querySelector<HTMLButtonElement>('#add-todo-button')
     const inputValue = document.querySelector<HTMLInputElement>('#todo-input')
@@ -87,21 +99,22 @@ class TaskManager {
     })
   }
 
-  private async createTask(): Promise<void> {
+  public async createTask(): Promise<SavedApiTask> {
     const value = this.inputValue.value.trim()
 
     try {
       PreventTaskCreation(this.todoDates.value, new Date())
     } catch (error) {
       console.error(error)
-      return
+      throw error
     }
+
     if (!value) {
       showError('Please enter a task', this.errorMessage)
-      return
+      throw new Error('Task title is required')
     }
-    clearError(this.errorMessage)
 
+    clearError(this.errorMessage)
     const newTask: ApiTask = {
       title: value,
       content: value,
@@ -113,8 +126,19 @@ class TaskManager {
     this.todoDates.value = ''
 
     const savedTask = await this.api.saveTasksViaAPI(newTask)
+    const categories = await this.categorys.fetchCategories()
+
+    for (const category of categories) {
+      await this.categoryapi.SaveAssociationIdAPI(savedTask.id, category.id)
+
+      this.renderTask(savedTask)
+    }
+
     this.renderTask(savedTask)
+
+    return savedTask
   }
+
   private renderTask(task: SavedApiTask): void {
     const taskInstance = new Task(task, this.api)
     const taskElement = taskInstance.render()

@@ -190,6 +190,16 @@ ul {
   width: 100%;
 }
 
+.error-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  width: 8rem;
+  height: 2rem;
+}
+
 ul li {
   background: white;
   margin-bottom: 12px;
