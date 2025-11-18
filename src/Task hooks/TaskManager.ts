@@ -1,11 +1,4 @@
-// Hooksevent handler in original
-/*
-taskName = task.name
-categoryName = categories.find(c => c.id === task.categoryId).name
-categoryColor = categories.find(c => c.id === task.categoryId).color
-*/
-
-import type { AssociateCatgoriesAPI } from '../AssociateCategories/AssociateAPI'
+import { AssociateCatgoriesAPI } from '../AssociateCategories/AssociateAPI'
 import type { CategoryAPI } from '../CategoryApiHandling/CategoryAPI'
 import { clearError, showError } from '../Task components/errorHandler'
 import { Task } from '../Task components/Tasks'
@@ -22,6 +15,7 @@ export class TaskManager {
   private errorMessage!: HTMLDivElement
   private deleteAllbutton!: HTMLButtonElement
   private todoDates!: HTMLInputElement
+  private categorySelectInput!: HTMLSelectElement
 
   private validateDOMElements(): void {
     if (
@@ -56,6 +50,8 @@ export class TaskManager {
       document.querySelector<HTMLDivElement>('#error-message')
     const todoDates =
       document.querySelector<HTMLInputElement>('#todo-date-input')
+    const categorySelectInput =
+      document.querySelector<HTMLSelectElement>('.category-select')
 
     if (
       !addTaskButton ||
@@ -63,7 +59,8 @@ export class TaskManager {
       !taskCreatedSection ||
       !deleteAllbutton ||
       !errorMessage ||
-      !todoDates
+      !todoDates ||
+      !categorySelectInput
     ) {
       throw new Error('One or more required elements do not exist')
     }
@@ -74,6 +71,10 @@ export class TaskManager {
     this.deleteAllbutton = deleteAllbutton
     this.errorMessage = errorMessage
     this.todoDates = todoDates
+
+    this.categoryapi = new AssociateCatgoriesAPI()
+
+    this.categorySelectInput = categorySelectInput
 
     this.validateDOMElements()
     this.initialize()
@@ -125,13 +126,27 @@ export class TaskManager {
     this.inputValue.value = ''
     this.todoDates.value = ''
 
+    /*// Bugged Logic (Removed)
+const savedTask = await this.api.saveTasksViaAPI(newTask)
+const categories = await this.categorys.fetchCategories() // Fetches ALL categories
+for (const category of categories) {
+    // 🛑 BUG: This associated the new task (savedTask.id) with EVERY category (category.id).
+    await this.categoryapi.SaveAssociationIdAPI(savedTask.id, category.id) 
+}*/
+
+    // The fix prevents tasks from being associated with all categories, ensuring they display one color or no color based on the user's choice.
+    const selectedCategoryIdString = this.categorySelectInput.value
+    const selectedCategoryId = Number.parseInt(selectedCategoryIdString, 10)
+    const isValidCategorySelected =
+      !isNaN(selectedCategoryId) && selectedCategoryId > 0
+
     const savedTask = await this.api.saveTasksViaAPI(newTask)
-    const categories = await this.categorys.fetchCategories()
 
-    for (const category of categories) {
-      await this.categoryapi.SaveAssociationIdAPI(savedTask.id, category.id)
-
-      this.renderTask(savedTask)
+    if (isValidCategorySelected) {
+      await this.categoryapi.SaveAssociationIdAPI(
+        savedTask.id,
+        selectedCategoryId,
+      )
     }
 
     this.renderTask(savedTask)
@@ -139,9 +154,14 @@ export class TaskManager {
     return savedTask
   }
 
-  private renderTask(task: SavedApiTask): void {
-    const taskInstance = new Task(task, this.api)
-    const taskElement = taskInstance.render()
+  private async renderTask(task: SavedApiTask): Promise<void> {
+    const taskInstance = new Task(
+      task,
+      this.api,
+      this.categorys,
+      this.categoryapi,
+    )
+    const taskElement = await taskInstance.render()
     this.taskCreatedSection.append(taskElement)
     this.tasks.push(taskInstance)
   }

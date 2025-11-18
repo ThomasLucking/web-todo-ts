@@ -37,15 +37,15 @@ export class AssociateCatgoriesAPI extends BaseAPI {
     )
   }
 
-  GetAssociationIDs = async (): Promise<number[]> => {
+  async getCategoryIdByTodoId(todoId: number): Promise<number | null> {
     const data: Array<{ category_id: number; todo_id: number }> =
       await this.request(
-        this.API_URL,
+        `${this.API_URL}?todo_id=eq.${todoId}`,
         'GET',
         {
           loading: '...loading',
-          success: 'Successfully fetched associations',
-          error: 'Failed to load tasks',
+          success: 'Successfully fetched association',
+          error: 'Failed to load association',
         },
         {
           'Content-Type': 'application/json',
@@ -53,8 +53,10 @@ export class AssociateCatgoriesAPI extends BaseAPI {
         },
       )
 
-    const todoIds = data.map((item) => item.todo_id)
-    return todoIds
+    if (data.length > 0) {
+      return data[0].category_id
+    }
+    return null
   }
 
   async whatever2API(taskId: number): Promise<void> {

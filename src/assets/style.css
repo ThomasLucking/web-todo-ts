@@ -190,6 +190,12 @@ ul {
   width: 100%;
 }
 
+.category-text{
+  color: #667eea;
+  margin-left: 2rem;
+  white-space: nowrap;
+}
+
 .error-container {
   display: flex;
   flex-direction: row;
