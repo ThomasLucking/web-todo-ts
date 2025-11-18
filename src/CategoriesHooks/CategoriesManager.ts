@@ -1,10 +1,10 @@
 // Fixed CategoryManager.ts
 
 import { Category, EditCategory } from '../CategoriesComponents/Categories'
-import type {
-  ApiCategory,
+import {
+  type ApiCategory,
   CategoryAPI,
-  SavedCategoryAPI,
+  type SavedCategoryAPI,
 } from '../CategoryApiHandling/CategoryAPI'
 import { clearError, showError } from '../Task components/errorHandler'
 import { CATEGORY_DELETE_CLASS, DEFAULT_BLUE_COLOR } from '../types'
@@ -12,7 +12,7 @@ import { CATEGORY_DELETE_CLASS, DEFAULT_BLUE_COLOR } from '../types'
 class CategoryManager {
   private api: CategoryAPI
   private categories: Category[] = []
-
+  private categoryapi = new CategoryAPI()
   private addCategoryButton!: HTMLButtonElement
   private inputValue!: HTMLInputElement
   private colorInputValue!: HTMLInputElement
@@ -66,7 +66,30 @@ class CategoryManager {
     this.errorMessage = errorMessage
 
     this.validateDOMElements()
+    this.loadCategoriesIntoDropdown()
     this.initialize()
+  }
+
+  private async loadCategoriesIntoDropdown(): Promise<void> {
+    const categorySelect =
+      document.querySelector<HTMLSelectElement>('.category-select')
+    if (!categorySelect) throw new Error('Dropdown element does not exist')
+
+    const categories = await this.categoryapi.fetchCategories()
+
+    categorySelect.innerHTML = ''
+
+    const defaultOption = document.createElement('option')
+    defaultOption.value = ''
+    defaultOption.textContent = 'Select a category'
+    categorySelect.appendChild(defaultOption)
+
+    categories.forEach((category) => {
+      const option = document.createElement('option')
+      option.value = category.id.toString()
+      option.textContent = category.title
+      categorySelect.appendChild(option)
+    })
   }
 
   private initialize(): void {
@@ -103,6 +126,11 @@ class CategoryManager {
     this.colorInputValue.value = ''
 
     const savedCategory = await this.api.saveCategoriesViaAPI(newCategory)
+    if (!savedCategory) {
+      console.error('Category save failed, received undefined!')
+      return
+    }
+    this.loadCategoriesIntoDropdown()
     this.renderCategory(savedCategory)
   }
 

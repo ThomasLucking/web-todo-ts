@@ -36,6 +36,9 @@ export class CategoryAPI extends BaseAPI {
       },
       payload,
     )
+    if (!data || !data[0]) {
+      throw new Error('API did not return the saved category.')
+    }
 
     return data[0] as SavedCategoryAPI
   }

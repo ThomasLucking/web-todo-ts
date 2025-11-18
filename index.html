@@ -16,16 +16,22 @@
       <div class="overdue-Message"></div>
       <h1>My Tasks</h1>
       <label for="todo-input">Add Tasks</label>
+      <div class="error-container">
+        <div class="duration"></div>
+        <div class="durationCategories"></div>
+      </div>
       <div id="error-message">
       </div>
-      <div class="duration"></div>
       <div class="tasks-interactivity">
         <input type="text" id="todo-input" placeholder="Add a new Task">
         <input type="date" id="todo-date-input" pattern="\d{4}-\d{2}-\d{2}">
+        <label for="category-select">Category</label>
+        <select class="category-select" id="category-select">
+          <option value="">No category</option>
+        </select>
         <button id="add-todo-button">Add Task</button>
         <button id="delete-all">Delete All</button>
       </div>
-      <div class="durationCategories"></div>
       <section class="categories-section">
         <div class="container-for-input">
           <input type="text" id="category-name-input" placeholder="Create new Category">

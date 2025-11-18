@@ -1,20 +1,21 @@
-// Hooksevent handler in original
-
+import { AssociateCatgoriesAPI } from '../AssociateCategories/AssociateAPI'
+import type { CategoryAPI } from '../CategoryApiHandling/CategoryAPI'
 import { clearError, showError } from '../Task components/errorHandler'
-import Task from '../Task components/Tasks'
+import { Task } from '../Task components/Tasks'
 import type { ApiTask, SavedApiTask, TaskAPI } from '../TaskApiHandling/TaskAPI'
 import { PreventTaskCreation } from '../utils/date'
-
-class TaskManager {
+export class TaskManager {
   private api: TaskAPI
   private tasks: Task[] = []
-
+  private categoryapi: AssociateCatgoriesAPI
+  private categorys: CategoryAPI
   private addTaskButton!: HTMLButtonElement
   private inputValue!: HTMLInputElement
   private taskCreatedSection!: HTMLUListElement
   private errorMessage!: HTMLDivElement
   private deleteAllbutton!: HTMLButtonElement
   private todoDates!: HTMLInputElement
+  private categorySelectInput!: HTMLSelectElement
 
   private validateDOMElements(): void {
     if (
@@ -30,9 +31,14 @@ class TaskManager {
     }
   }
 
-  constructor(api: TaskAPI) {
+  constructor(
+    api: TaskAPI,
+    categoryapi: AssociateCatgoriesAPI,
+    categorys: CategoryAPI,
+  ) {
     this.api = api
-
+    this.categoryapi = categoryapi
+    this.categorys = categorys
     const addTaskButton =
       document.querySelector<HTMLButtonElement>('#add-todo-button')
     const inputValue = document.querySelector<HTMLInputElement>('#todo-input')
@@ -44,6 +50,8 @@ class TaskManager {
       document.querySelector<HTMLDivElement>('#error-message')
     const todoDates =
       document.querySelector<HTMLInputElement>('#todo-date-input')
+    const categorySelectInput =
+      document.querySelector<HTMLSelectElement>('.category-select')
 
     if (
       !addTaskButton ||
@@ -51,7 +59,8 @@ class TaskManager {
       !taskCreatedSection ||
       !deleteAllbutton ||
       !errorMessage ||
-      !todoDates
+      !todoDates ||
+      !categorySelectInput
     ) {
       throw new Error('One or more required elements do not exist')
     }
@@ -62,6 +71,10 @@ class TaskManager {
     this.deleteAllbutton = deleteAllbutton
     this.errorMessage = errorMessage
     this.todoDates = todoDates
+
+    this.categoryapi = new AssociateCatgoriesAPI()
+
+    this.categorySelectInput = categorySelectInput
 
     this.validateDOMElements()
     this.initialize()
@@ -87,21 +100,22 @@ class TaskManager {
     })
   }
 
-  private async createTask(): Promise<void> {
+  public async createTask(): Promise<SavedApiTask> {
     const value = this.inputValue.value.trim()
 
     try {
       PreventTaskCreation(this.todoDates.value, new Date())
     } catch (error) {
       console.error(error)
-      return
+      throw error
     }
+
     if (!value) {
       showError('Please enter a task', this.errorMessage)
-      return
+      throw new Error('Task title is required')
     }
-    clearError(this.errorMessage)
 
+    clearError(this.errorMessage)
     const newTask: ApiTask = {
       title: value,
       content: value,
@@ -112,12 +126,34 @@ class TaskManager {
     this.inputValue.value = ''
     this.todoDates.value = ''
 
+    // The fix prevents tasks from being associated with all categories, ensuring they display one color or no color based on the user's choice.
+    const selectedCategoryIdString = this.categorySelectInput.value
+    const selectedCategoryId = Number.parseInt(selectedCategoryIdString, 10)
+    const isValidCategorySelected =
+      !Number.isNaN(selectedCategoryId) && selectedCategoryId > 0
+
     const savedTask = await this.api.saveTasksViaAPI(newTask)
+
+    if (isValidCategorySelected) {
+      await this.categoryapi.SaveAssociationIdAPI(
+        savedTask.id,
+        selectedCategoryId,
+      )
+    }
+
     this.renderTask(savedTask)
+
+    return savedTask
   }
-  private renderTask(task: SavedApiTask): void {
-    const taskInstance = new Task(task, this.api)
-    const taskElement = taskInstance.render()
+
+  private async renderTask(task: SavedApiTask): Promise<void> {
+    const taskInstance = new Task(
+      task,
+      this.api,
+      this.categorys,
+      this.categoryapi,
+    )
+    const taskElement = await taskInstance.render()
     this.taskCreatedSection.append(taskElement)
     this.tasks.push(taskInstance)
   }

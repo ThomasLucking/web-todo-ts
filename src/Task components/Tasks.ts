@@ -1,5 +1,7 @@
 // taskelements in the original file.
 
+import type { AssociateCatgoriesAPI } from '../AssociateCategories/AssociateAPI'
+import type { CategoryAPI } from '../CategoryApiHandling/CategoryAPI'
 import type { SavedApiTask, TaskAPI } from '../TaskApiHandling/TaskAPI'
 import {
   CHECKBOX_ITEM_CLASS,
@@ -10,17 +12,27 @@ import {
 } from '../types/index'
 import { checkOverdueTasks, getColorScheme } from '../utils/date'
 
-class Task {
+export class Task {
   private data: SavedApiTask
   private api: TaskAPI
+  private categorys: CategoryAPI
   private taskItem!: HTMLLIElement
   private checkbox!: HTMLInputElement
   private deleteButton!: HTMLButtonElement
   private textSpan!: HTMLSpanElement
+  private categoryname!: HTMLSpanElement
+  private associateApi: AssociateCatgoriesAPI
 
-  constructor(data: SavedApiTask, api: TaskAPI) {
+  constructor(
+    data: SavedApiTask,
+    api: TaskAPI,
+    categorys: CategoryAPI,
+    associateApi: AssociateCatgoriesAPI,
+  ) {
     this.data = data
     this.api = api
+    this.categorys = categorys
+    this.associateApi = associateApi
   }
 
   private createConfigTimeDate(): HTMLParagraphElement {
@@ -47,7 +59,7 @@ class Task {
     return dueDate
   }
 
-  render(): HTMLLIElement {
+  async render(): Promise<string | Node> {
     this.taskItem = document.createElement('li')
     this.taskItem.classList.add(TODO_ITEM_CLASS)
 
@@ -59,12 +71,32 @@ class Task {
     this.textSpan.textContent = this.data.title
     this.textSpan.classList.add(SPAN_TEXT_CLASS)
 
+    this.categoryname = document.createElement('span')
+    this.categoryname.textContent = 'no category.'
+    this.categoryname.classList.add('category-text')
+
     this.deleteButton = document.createElement('button')
     this.deleteButton.textContent = 'Remove'
     this.deleteButton.classList.add(DELETE_TASK_CLASS)
 
     const dueDateElement = this.createConfigTimeDate()
     this.checkbox.checked = this.data.done
+    const categoryId = await this.associateApi.getCategoryIdByTodoId(
+      this.data.id,
+    )
+
+    if (categoryId !== null) {
+      const categories = await this.categorys.fetchCategories()
+
+      const taskCategory = categories.find(
+        (category) => category.id === categoryId,
+      )
+
+      if (taskCategory) {
+        this.taskItem.style.border = `2px solid ${taskCategory.color}`
+        this.categoryname.textContent = taskCategory.title
+      }
+    }
     if (this.data.done) {
       this.taskItem.classList.add('completed')
     }
@@ -72,12 +104,14 @@ class Task {
       this.checkbox,
       this.textSpan,
       this.deleteButton,
+      this.categoryname,
       dueDateElement,
     )
     this.attachEvents()
 
     return this.taskItem
   }
+
   private removeOverdueMessage(): void {
     const container = document.querySelector(`[data-taskid="${this.data.id}"]`)
     if (!container) {
