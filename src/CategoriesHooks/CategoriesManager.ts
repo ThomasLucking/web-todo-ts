@@ -1,10 +1,10 @@
 // Fixed CategoryManager.ts
 
 import { Category, EditCategory } from '../CategoriesComponents/Categories'
-import {
-  type ApiCategory,
+import type {
+  ApiCategory,
   CategoryAPI,
-  type SavedCategoryAPI,
+  SavedCategoryAPI,
 } from '../CategoryApiHandling/CategoryAPI'
 import { clearError, showError } from '../Task components/errorHandler'
 import { CATEGORY_DELETE_CLASS, DEFAULT_BLUE_COLOR } from '../types'
