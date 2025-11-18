@@ -73,6 +73,10 @@ export class TaskManager {
     this.todoDates = todoDates
     this.categorySelectInput = categorySelectInput
 
+    this.categoryapi = new AssociateCatgoriesAPI()
+
+    this.categorySelectInput = categorySelectInput
+
     this.validateDOMElements()
     this.initialize()
   }

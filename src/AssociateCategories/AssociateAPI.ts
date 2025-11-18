@@ -58,4 +58,4 @@ export class AssociateCatgoriesAPI extends BaseAPI {
     }
     return null
   }
-}
+
