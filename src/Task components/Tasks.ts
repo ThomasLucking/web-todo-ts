@@ -66,7 +66,7 @@ export class Task {
     this.checkbox = document.createElement('input')
     this.checkbox.type = 'checkbox'
     this.checkbox.classList.add(CHECKBOX_ITEM_CLASS)
-    
+
     this.textSpan = document.createElement('span')
     this.textSpan.textContent = this.data.title
     this.textSpan.classList.add(SPAN_TEXT_CLASS)
@@ -78,7 +78,7 @@ export class Task {
     this.deleteButton = document.createElement('button')
     this.deleteButton.textContent = 'Remove'
     this.deleteButton.classList.add(DELETE_TASK_CLASS)
-    
+
     const dueDateElement = this.createConfigTimeDate()
     this.checkbox.checked = this.data.done
     const categoryId = await this.associateApi.getCategoryIdByTodoId(

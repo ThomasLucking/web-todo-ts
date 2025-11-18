@@ -11,8 +11,7 @@ export interface ApiTask {
 export type SavedApiTask = ApiTask & { id: number }
 
 export class TaskAPI extends BaseAPI {
-  private API_URL =
-    'https://api.todos.in.jt-lab.ch/todos'
+  private API_URL = 'https://api.todos.in.jt-lab.ch/todos'
   protected duration_timer = document.querySelector<HTMLDivElement>('.duration')
 
   saveTasksViaAPI = async (task: ApiTask): Promise<SavedApiTask> => {

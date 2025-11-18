@@ -130,7 +130,7 @@ export class TaskManager {
     const selectedCategoryIdString = this.categorySelectInput.value
     const selectedCategoryId = Number.parseInt(selectedCategoryIdString, 10)
     const isValidCategorySelected =
-      !isNaN(selectedCategoryId) && selectedCategoryId > 0
+      !Number.isNaN(selectedCategoryId) && selectedCategoryId > 0
 
     const savedTask = await this.api.saveTasksViaAPI(newTask)
 
