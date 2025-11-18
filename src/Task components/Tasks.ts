@@ -23,6 +23,13 @@ export class Task {
   private categoryname!: HTMLSpanElement
   private associateApi: AssociateCatgoriesAPI
 
+  // static means it's across all instances and can be used
+  private static cachedCategories: Array<{
+    id: number
+    title: string
+    color: string
+  }> | null = null
+
   constructor(
     data: SavedApiTask,
     api: TaskAPI,
@@ -33,6 +40,15 @@ export class Task {
     this.api = api
     this.categorys = categorys
     this.associateApi = associateApi
+  }
+
+  private async getCategories(): Promise<
+    Array<{ id: number; title: string; color: string }>
+  > {
+    if (!Task.cachedCategories) {
+      Task.cachedCategories = await this.categorys.fetchCategories()
+    }
+    return Task.cachedCategories
   }
 
   private createConfigTimeDate(): HTMLParagraphElement {
@@ -86,7 +102,7 @@ export class Task {
     )
 
     if (categoryId !== null) {
-      const categories = await this.categorys.fetchCategories()
+      const categories = await this.getCategories()
 
       const taskCategory = categories.find(
         (category) => category.id === categoryId,

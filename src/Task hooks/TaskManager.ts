@@ -71,6 +71,7 @@ export class TaskManager {
     this.deleteAllbutton = deleteAllbutton
     this.errorMessage = errorMessage
     this.todoDates = todoDates
+    this.categorySelectInput = categorySelectInput
 
     this.categoryapi = new AssociateCatgoriesAPI()
 

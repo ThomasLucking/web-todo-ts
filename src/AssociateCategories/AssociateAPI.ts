@@ -58,12 +58,4 @@ export class AssociateCatgoriesAPI extends BaseAPI {
     }
     return null
   }
-
-  async whatever2API(taskId: number): Promise<void> {
-    await this.request(`${this.API_URL}?id=eq.${taskId}`, 'DELETE', {
-      loading: 'Attempting to delete task...',
-      success: 'Task successfully deleted',
-      error: 'Failed to delete task',
-    })
-  }
 }
