@@ -126,14 +126,6 @@ export class TaskManager {
     this.inputValue.value = ''
     this.todoDates.value = ''
 
-    /*// Bugged Logic (Removed)
-const savedTask = await this.api.saveTasksViaAPI(newTask)
-const categories = await this.categorys.fetchCategories() // Fetches ALL categories
-for (const category of categories) {
-    // 🛑 BUG: This associated the new task (savedTask.id) with EVERY category (category.id).
-    await this.categoryapi.SaveAssociationIdAPI(savedTask.id, category.id) 
-}*/
-
     // The fix prevents tasks from being associated with all categories, ensuring they display one color or no color based on the user's choice.
     const selectedCategoryIdString = this.categorySelectInput.value
     const selectedCategoryId = Number.parseInt(selectedCategoryIdString, 10)
