@@ -12,7 +12,6 @@ import { CATEGORY_DELETE_CLASS, DEFAULT_BLUE_COLOR } from '../types'
 class CategoryManager {
   private api: CategoryAPI
   private categories: Category[] = []
-  private categoryapi = new CategoryAPI()
   private addCategoryButton!: HTMLButtonElement
   private inputValue!: HTMLInputElement
   private colorInputValue!: HTMLInputElement
@@ -75,7 +74,7 @@ class CategoryManager {
       document.querySelector<HTMLSelectElement>('.category-select')
     if (!categorySelect) throw new Error('Dropdown element does not exist')
 
-    const categories = await this.categoryapi.fetchCategories()
+    const categories = await this.api.fetchCategories()
 
     categorySelect.innerHTML = ''
 
