@@ -1,5 +1,3 @@
-// taskelements in the original file.
-
 import type { AssociateCatgoriesAPI } from '../AssociateCategories/AssociateAPI'
 import type { CategoryAPI } from '../CategoryApiHandling/CategoryAPI'
 import type { SavedApiTask, TaskAPI } from '../TaskApiHandling/TaskAPI'
@@ -74,6 +72,25 @@ export class Task {
     dueDate.appendChild(time)
     return dueDate
   }
+  
+  private async configureCategory(): Promise<void> {
+    const categoryId = await this.associateApi.getCategoryIdByTodoId(
+      this.data.id,
+    )
+
+    if (categoryId !== null) {
+      const categories = await this.getCategories()
+
+      const taskCategory = categories.find(
+        (category) => category.id === categoryId,
+      )
+
+      if (taskCategory) {
+        this.taskItem.style.border = `2px solid ${taskCategory.color}`
+        this.categoryname.textContent = taskCategory.title
+      }
+    }
+  }
 
   async render(): Promise<string | Node> {
     this.taskItem = document.createElement('li')
@@ -97,25 +114,13 @@ export class Task {
 
     const dueDateElement = this.createConfigTimeDate()
     this.checkbox.checked = this.data.done
-    const categoryId = await this.associateApi.getCategoryIdByTodoId(
-      this.data.id,
-    )
+    
+    await this.configureCategory()
 
-    if (categoryId !== null) {
-      const categories = await this.getCategories()
-
-      const taskCategory = categories.find(
-        (category) => category.id === categoryId,
-      )
-
-      if (taskCategory) {
-        this.taskItem.style.border = `2px solid ${taskCategory.color}`
-        this.categoryname.textContent = taskCategory.title
-      }
-    }
     if (this.data.done) {
       this.taskItem.classList.add('completed')
     }
+    
     this.taskItem.append(
       this.checkbox,
       this.textSpan,
@@ -123,6 +128,7 @@ export class Task {
       this.categoryname,
       dueDateElement,
     )
+    
     this.attachEvents()
 
     return this.taskItem
@@ -135,6 +141,7 @@ export class Task {
     }
     container.remove()
   }
+  
   private attachEvents(): void {
     if (this.data.due_date) {
       checkOverdueTasks(this.data.due_date, new Date(), this.data.id)

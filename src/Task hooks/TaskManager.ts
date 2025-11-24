@@ -4,6 +4,7 @@ import { clearError, showError } from '../Task components/errorHandler'
 import { Task } from '../Task components/Tasks'
 import type { ApiTask, SavedApiTask, TaskAPI } from '../TaskApiHandling/TaskAPI'
 import { PreventTaskCreation } from '../utils/date'
+
 export class TaskManager {
   private api: TaskAPI
   private tasks: Task[] = []
@@ -17,20 +18,6 @@ export class TaskManager {
   private todoDates!: HTMLInputElement
   private categorySelectInput!: HTMLSelectElement
 
-  private validateDOMElements(): void {
-    if (
-      !this.addTaskButton ||
-      !this.inputValue ||
-      !this.taskCreatedSection ||
-      !this.errorMessage ||
-      !this.deleteAllbutton ||
-      !this.todoDates
-    ) {
-      console.error('Missing a Dom element')
-      throw new Error('Missing a DOM element. Aborting script.')
-    }
-  }
-
   constructor(
     api: TaskAPI,
     categoryapi: AssociateCatgoriesAPI,
@@ -39,6 +26,9 @@ export class TaskManager {
     this.api = api
     this.categoryapi = categoryapi
     this.categorys = categorys
+    
+    // --- DOM Element Selection and Validation ---
+    
     const addTaskButton =
       document.querySelector<HTMLButtonElement>('#add-todo-button')
     const inputValue = document.querySelector<HTMLInputElement>('#todo-input')
@@ -62,7 +52,7 @@ export class TaskManager {
       !todoDates ||
       !categorySelectInput
     ) {
-      throw new Error('One or more required elements do not exist')
+      throw new Error('One or more required DOM elements do not exist')
     }
 
     this.addTaskButton = addTaskButton
@@ -72,12 +62,9 @@ export class TaskManager {
     this.errorMessage = errorMessage
     this.todoDates = todoDates
     this.categorySelectInput = categorySelectInput
+    
 
-    this.categoryapi = new AssociateCatgoriesAPI()
 
-    this.categorySelectInput = categorySelectInput
-
-    this.validateDOMElements()
     this.initialize()
   }
 
@@ -108,15 +95,17 @@ export class TaskManager {
       PreventTaskCreation(this.todoDates.value, new Date())
     } catch (error) {
       console.error(error)
+      showError(error instanceof Error ? error.message : 'Invalid date selected', this.errorMessage)
       throw error
     }
 
     if (!value) {
-      showError('Please enter a task', this.errorMessage)
+      showError('Please enter a task title', this.errorMessage)
       throw new Error('Task title is required')
     }
 
     clearError(this.errorMessage)
+    
     const newTask: ApiTask = {
       title: value,
       content: value,
@@ -127,7 +116,6 @@ export class TaskManager {
     this.inputValue.value = ''
     this.todoDates.value = ''
 
-    // The fix prevents tasks from being associated with all categories, ensuring they display one color or no color based on the user's choice.
     const selectedCategoryIdString = this.categorySelectInput.value
     const selectedCategoryId = Number.parseInt(selectedCategoryIdString, 10)
     const isValidCategorySelected =

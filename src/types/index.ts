@@ -11,6 +11,7 @@ export const CATEGORY_DELETE_CLASS = 'category-item__delete' as const
 export const SPAN_CATEGORY_TEXT = 'category-span' as const
 export const DEFAULT_COLOR = '#cccccc' as const
 export const DEFAULT_BLUE_COLOR = '#0000ff' as const
+export const DARK_MODE_TOGGLE = 'theme-toggle' as const
 export const DATE_RANGES = {
   OVERDUE: { bg: 'red', color: 'black' },
   TODAY: { bg: 'orange', color: 'black' },
