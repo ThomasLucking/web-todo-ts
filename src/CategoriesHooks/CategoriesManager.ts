@@ -18,19 +18,6 @@ class CategoryManager {
   private categoryListSection!: HTMLUListElement
   private errorMessage!: HTMLDivElement
 
-  private validateDOMElements(): void {
-    if (
-      !this.addCategoryButton ||
-      !this.inputValue ||
-      !this.colorInputValue ||
-      !this.categoryListSection ||
-      !this.errorMessage
-    ) {
-      console.error('Missing a DOM element')
-      throw new Error('Missing a DOM element. Aborting script.')
-    }
-  }
-
   constructor(api: CategoryAPI) {
     this.api = api
 
@@ -40,10 +27,12 @@ class CategoryManager {
     const inputValue = document.querySelector<HTMLInputElement>(
       '#category-name-input',
     )
-    const colorInputValue =
-      document.querySelector<HTMLInputElement>('#categories-color')
-    const categoryListSection =
-      document.querySelector<HTMLUListElement>('#category-items')
+    const colorInputValue = document.querySelector<HTMLInputElement>(
+      '#categories-color-input',
+    )
+    const categoryListSection = document.querySelector<HTMLUListElement>(
+      '#categories-elements',
+    )
     const errorMessage =
       document.querySelector<HTMLDivElement>('#error-message')
 
@@ -64,7 +53,6 @@ class CategoryManager {
     this.categoryListSection = categoryListSection
     this.errorMessage = errorMessage
 
-    this.validateDOMElements()
     this.loadCategoriesIntoDropdown()
     this.initialize()
   }

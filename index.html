@@ -9,12 +9,15 @@
   <title>Web todolist project</title>
 </head>
 
-<body>
+<body id="body_task">
   <script type="module" src="/src/main.ts"></script>
   <div class="main-container">
     <div class="container">
       <div class="overdue-Message"></div>
-      <h1>My Tasks</h1>
+      <div class="theme-toggle-container">
+        <button class="theme-toggle">Toggle Dark Mode</button>
+      </div>
+      <h1>Todo List</h1>
       <label for="todo-input">Add Tasks</label>
       <div class="error-container">
         <div class="duration"></div>
@@ -35,10 +38,10 @@
       <section class="categories-section">
         <div class="container-for-input">
           <input type="text" id="category-name-input" placeholder="Create new Category">
-          <input type="color" id="categories-color">
+          <input type="color" id="categories-color-input">
           <button id="create-category-button">Create Category</button>
         </div>
-        <ul id="category-items"></ul>
+        <ul id="categories-elements"></ul>
       </section>
       <hr class="section-divider">
       <div class="list-container">
