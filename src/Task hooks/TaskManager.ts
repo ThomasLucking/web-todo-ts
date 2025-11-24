@@ -1,4 +1,4 @@
-import { AssociateCatgoriesAPI } from '../AssociateCategories/AssociateAPI'
+import type { AssociateCatgoriesAPI } from '../AssociateCategories/AssociateAPI'
 import type { CategoryAPI } from '../CategoryApiHandling/CategoryAPI'
 import { clearError, showError } from '../Task components/errorHandler'
 import { Task } from '../Task components/Tasks'
@@ -26,9 +26,9 @@ export class TaskManager {
     this.api = api
     this.categoryapi = categoryapi
     this.categorys = categorys
-    
+
     // --- DOM Element Selection and Validation ---
-    
+
     const addTaskButton =
       document.querySelector<HTMLButtonElement>('#add-todo-button')
     const inputValue = document.querySelector<HTMLInputElement>('#todo-input')
@@ -62,8 +62,6 @@ export class TaskManager {
     this.errorMessage = errorMessage
     this.todoDates = todoDates
     this.categorySelectInput = categorySelectInput
-    
-
 
     this.initialize()
   }
@@ -95,7 +93,10 @@ export class TaskManager {
       PreventTaskCreation(this.todoDates.value, new Date())
     } catch (error) {
       console.error(error)
-      showError(error instanceof Error ? error.message : 'Invalid date selected', this.errorMessage)
+      showError(
+        error instanceof Error ? error.message : 'Invalid date selected',
+        this.errorMessage,
+      )
       throw error
     }
 
@@ -105,7 +106,7 @@ export class TaskManager {
     }
 
     clearError(this.errorMessage)
-    
+
     const newTask: ApiTask = {
       title: value,
       content: value,

@@ -20,7 +20,7 @@ class CategoryManager {
 
   constructor(api: CategoryAPI) {
     this.api = api
-    
+
     const addCategoryButton = document.querySelector<HTMLButtonElement>(
       '#create-category-button',
     )
@@ -34,8 +34,8 @@ class CategoryManager {
       '#categories-elements',
     )
     const errorMessage =
-    document.querySelector<HTMLDivElement>('#error-message')
-    
+      document.querySelector<HTMLDivElement>('#error-message')
+
     if (
       !addCategoryButton ||
       !inputValue ||
