@@ -56,36 +56,6 @@
   --input-text: var(--text);
 }
 
-.light-mode {
-  --bg: #f5f7fa;
-  --text: #2c3e50;
-  --heading: #1e3040;
-
-  --card-bg: white;
-  --card-hover-bg: #f9fbfc;
-
-  --highlight: #3498db;
-
-  --border: #e0e6ed;
-  --section-divider: #b4c2d6;
-
-  --shadow-light: rgba(52, 152, 219, 0.1);
-  --shadow-hover: rgba(52, 152, 219, 0.2);
-
-  --btn-primary-bg: #2ecc71;
-  --btn-primary-text: white;
-
-  --color-error: #e74c3c;
-  --color-delete: #c0392b;
-  --delete-text: var(--color-error);
-
-  --color-overdue: #f39c12;
-
-  /* Input Specific Colors */
-  --input-bg: white;
-  --input-text: var(--text);
-}
-
 html,
 body {
   padding: 0;
